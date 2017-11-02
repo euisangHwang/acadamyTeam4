@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width">
+    <title>사진 경로 페이지</title>
+    
+    <style>
+    
+/*     #whole_place
+   	{
+   	height:736px;
+   	width:414px;
+   	text-align:center;
+   	} */
+    
+   	#top_fixed
+   	{
+   	text-align:center;
+   	height:92px;
+   	}
+   	
+   	#search_place
+   	{
+   	height:40px;
+   	margin:10px;
+   	padding:20px;
+   	}
+
+   	#map_place
+   	{
+   	height:250px;
+   	width:300px;
+   	border:1px solid;
+   	margin:0 auto;
+   	}
+
+   	
+   	#button_place
+   	{
+   	padding-top:30px;
+   	float:right;
+   	}
+
+
+    </style>
+    
+    <!-- 상단 로고 부분 -->
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<link href="css/bootstrap.css" rel="stylesheet">
+
+</head>
+	
+	
+<body>
+	<!-- 전체 구간 시작 -->
+	<div id="whole_place">
+	
+	<!-- top area 시작 -->
+      <div style="overflow: hidden; background-color: red;">
+         <img src="menu.png" style="vertical-align: top;" height="80">
+            <div style="border: 3px solid; display:inline-block; width:122px; margin:2px 53px; line-height: 65px; text-align:center; overflow: hidden;">로고</div>
+         <img src="menu.png" style="vertical-align: top;" height="80">
+      </div>
+	<!-- top area 끝 -->
+	
+		
+	<!-- 검색 창 시작 -->
+	<div id="search_place">
+	<table align="center">
+	<tr>
+	<td>
+	<select></select>
+	<input type="text" placeholder="주소 검색"> <button>검색</button>
+	</td>
+	</tr>
+	</table>
+	</div>
+	
+	<!-- 검색 창 끝 -->
+	
+	<!-- 지도 칸 시작 -->
+	<div id="map_place">
+	
+	</div>
+	<!-- 지도 칸 끝 -->
+	
+	<!-- 버튼 칸 시작 -->
+	<div id="button_place">
+	<input type="button" value="여행경로 적용"><input type="button" value="선택">
+	</div>
+	<!-- 버튼 칸 끝 -->
+	
+	</div>
+	<!-- 전체 구간 끝 -->
+
+</body>
+</html>
