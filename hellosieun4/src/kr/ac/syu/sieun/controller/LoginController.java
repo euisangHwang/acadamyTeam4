@@ -24,14 +24,14 @@ public class LoginController {
 	public String login(Model model) {
 		logger.info("Welcome LoginController login! "+ new Date());
 		model.addAttribute("title", "회원가입");
-		return "login.tiles";
+		return "login/login.tiles";
 	}//
 	@RequestMapping(value = "addmember.do", method = {RequestMethod.POST })
 	public String addmember(Members member,Model model) {
 		logger.info("Welcome LoginController addmember! "+ new Date());
 		model.addAttribute("title", "회원가입");
 		iMemeberService.addMembers(member);
-		return "login.tiles";
+		return "login/login.tiles";
 	}//
 	
 	
