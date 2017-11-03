@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sieun.Members"> 
+
+<select id="getAllMembers"
+resultType="kr.ac.syu.sieun.dto.Members">
+SELECT 	IDX, ID, PASS, NAME, LEVEL
+FROM MEMBERS
+ORDER BY IDX
+</select>
+<insert id="addMembers" parameterType="kr.ac.syu.sieun.dto.Members">
+INSERT INTO MEMBERS(ID, PASS, NAME, LEVEL)
+VALUES( #{id}, #{pass},#{name},#{level})
+</insert>
+
+
+
+
+ </mapper>
