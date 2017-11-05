@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sieun.Devices"> 
+
+<select id="getAllMembers"
+resultType="kr.ac.syu.sieun.dto.Members">
+SELECT 	IDX, ID, PASS, NAME, LEVEL
+FROM MEMBERS
+ORDER BY IDX
+</select>
+
+<select id="selectAllDevice"
+parameterType = "map"
+resultType="map">
+SELECT * FROM DEVICE 
+WHERE 1=1
+<if test="deviceSort != null and deviceSort != ''">
+MEMBERCODE = #{uMCode} AND DEVICESORT = '#{deviceSort}'
+</if>
+<if test="deviceCode != 0 and deviceCode != null">
+DEVICECODE = #{_parameter}
+</if>
+
+</select>
+
+<select id="selectAllMusic"
+parameterType = "integer"
+resultType="map">
+SELECT * FROM MUSIC WHERE MEMBERCODE = #{_parameter}
+</select>
+
+<select id="selectAllPicture"
+parameterType = "integer"
+resultType="map">
+SELECT * FROM PICTURE WHERE DEVICECODE = #{_parameter}
+</select>
+
+<insert id="insertSound" parameterType="map">
+INSERT INTO MUSIC (MADD, MORINAME, MFULLNAME, MEMBERCODE) 
+VALUES (#{filePath}, #{orgFileName}, #{fullFileName}, #{uid})
+
+
+</insert>
+
+ </mapper>

@@ -10,14 +10,13 @@
 	function toDetailMain (deviceCode) {
 		
 		$("#toDetailMainFrm input").val(deviceCode);
-		$("#toDetailMainFrm).submit();
-		
+		$("#toDetailMainFrm").submit();
 	}
 
 </script>
 
-<form id="toDetailMainFrm" action="toDetailMain.do" method="post">
-	<input type="hidden" value=""/>
+<form id="toDetailMainFrm" action="toDetailMain.do" method="post" style="display: none;">
+	<input type="hidden" name="deviceCode" value=""/>
 </form>
 
 <c:forEach items="${devices}" var="devices">

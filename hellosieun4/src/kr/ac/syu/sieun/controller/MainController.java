@@ -54,25 +54,45 @@ public class MainController {
 		return page;
 	}
 	
-/*	@RequestMapping(value="toDetailMain.do")
+	@RequestMapping(value="toDetailMain.do")
 	public String toDetailMain (HttpServletRequest req, Model model) {
+		
+		int deviceCode = Integer.parseInt(req.getParameter("deviceCode"));
+		
+		String page = "redirect:login.do";
+		int memberCode = (int)req.getSession().getAttribute("sessMCode");
+		
+		if(memberCode != 0) {
+			//장치정보 가져오기
+			Map<String,Object> cctvInfo =  deviceService.selectAllDevice(deviceCode);
+			model.addAttribute("cctvInfo", cctvInfo);
+			
+			System.out.println(cctvInfo.toString());
+			
+			page = "main/detailMain.tiles";
+		}
+		return page;
+	}
+	
+	@RequestMapping(value="toShowPicture.do")
+	public String toShowPicture (HttpServletRequest req, Model model) {
+		
+		int deviceCode = Integer.parseInt(req.getParameter("deviceCode"));
 		
 		String page = "redirect:login.do";
 		int memberCode = (int)req.getSession().getAttribute("sessMCode");
 		
 		if(memberCode != 0) {
 			//사진 목록 가져오기
-			List<Map<String,Object>> pictures =  deviceService.selectAllPicture(memberCode);
+			List<Map<String,Object>> pictures =  deviceService.selectAllPicture(deviceCode);
 			model.addAttribute("pictures", pictures);
 			
 			System.out.println(pictures.toString());
 			
 			page = "main/detailMain.tiles";
 		}
-		
 		return page;
-	}*/
-	
+	}
 	
 	@RequestMapping(value="insertSound.do")
 	public String insertSound (MultipartHttpServletRequest mreq, Model model) {
