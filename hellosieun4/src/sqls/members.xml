@@ -10,9 +10,21 @@ SELECT 	IDX, ID, PASS, NAME, LEVEL
 FROM MEMBERS
 ORDER BY IDX
 </select>
+
+<select id="isUser"
+parameterType = "map"
+resultType="integer">
+SELECT MEMBERCODE mCode FROM MEMBER WHERE ID = #{uid} AND PW = #{upass}
+</select>
+
 <insert id="addMembers" parameterType="kr.ac.syu.sieun.dto.Members">
 INSERT INTO MEMBERS(ID, PASS, NAME, LEVEL)
 VALUES( #{id}, #{pass},#{name},#{level})
+</insert>
+
+<insert id="insertMember" parameterType="kr.ac.syu.sieun.dto.Members">
+INSERT INTO MEMBERS(ID, PW, TEL, NAME, ADDRESS, HOMEIMG)
+VALUES( )
 </insert>
 
 

@@ -4,3 +4,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:requestEncoding value="UTF-8"/>
 <p><h1>안녕 나 헤드</h1></p>
+
+
+<script src="<%=request.getContextPath()%>/lib/jquery-1.5.js"></script>
+<script>
+
+	function pageSubmit (pageName) {
+		
+		$("#pSubmit").attr("action",pageName);
+		$("#pSubmit").submit();
+	}
+
+</script>
+
+<form id="pSubmit" method="post">
+
+</form>

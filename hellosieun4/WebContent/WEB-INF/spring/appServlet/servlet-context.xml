@@ -56,12 +56,12 @@
 	</beans:bean> -->
 	
 	
-<!-- <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >
+<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >
 <beans:property name="maxUploadSize" value="104857600"/>
 <beans:property name="maxInMemorySize"  value="102400"/>
 <beans:property name="defaultEncoding" value="utf-8"/>
-<beans:property name="uploadTempDir" value="upload"/>
-</beans:bean> -->
+<!-- <beans:property name="uploadTempDir" value="upload"/> -->
+</beans:bean> 
 
  <!-- Interceptor -->
 <!--     <mvc:interceptors> -->
