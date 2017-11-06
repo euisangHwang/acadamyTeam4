@@ -4,11 +4,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="sieun.Members"> 
 
-<select id="getAllMembers"
-resultType="kr.ac.syu.sieun.dto.Members">
-SELECT 	IDX, ID, PASS, NAME, LEVEL
-FROM MEMBERS
-ORDER BY IDX
+<select id="selectOneMember"
+parameterType="integer"
+resultType="map">
+SELECT M.memberCode, M.id, M.pw, M.tel, M.name, M.address, M.homeimg, (SELECT pPath FROM picture WHERE pictureCode = M.homeimg) pPath
+FROM member M
+WHERE M.memberCode= #{_parameter}
 </select>
 
 <select id="isUser"
@@ -17,17 +18,21 @@ resultType="integer">
 SELECT MEMBERCODE mCode FROM MEMBER WHERE ID = #{uid} AND PW = #{upass}
 </select>
 
-<insert id="addMembers" parameterType="kr.ac.syu.sieun.dto.Members">
-INSERT INTO MEMBERS(ID, PASS, NAME, LEVEL)
-VALUES( #{id}, #{pass},#{name},#{level})
+<insert id="insertMember" parameterType="map">
+INSERT INTO MEMBER (ID, PW, TEL, NAME, ADDRESS, HOMEIMG)
+VALUES(#{id},#{pw},#{tel},#{name},#{address}, #{homeimg})
 </insert>
 
-<insert id="insertMember" parameterType="kr.ac.syu.sieun.dto.Members">
-INSERT INTO MEMBERS(ID, PW, TEL, NAME, ADDRESS, HOMEIMG)
-VALUES( )
-</insert>
-
-
+<update id="updateMember" parameterType="map">
+UPDATE MEMBER
+SET ID 		= #{id}, 
+	PW	    = #{pw}, 
+	TEL 	= #{tel}, 
+	NAME	= #{name}, 
+	ADDRESS = #{address},
+	HOMEIMG = #{homeimg}
+WHERE MEMBERCODE   = #{memberCode}
+</update>
 
 
  </mapper>

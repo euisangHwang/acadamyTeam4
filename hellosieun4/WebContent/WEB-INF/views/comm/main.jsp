@@ -5,32 +5,21 @@
 <fmt:requestEncoding value="UTF-8" />
 
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width">
-<title>Insert title here</title>
-</head>
+
+<!-- head -->
+<div id="head">
+	<t:insertAttribute name="head" />
+</div>
 <body>
-
-	<!-- header -->
-	<div id="header">
+	<div class="body-wrapper">
+		<!-- header -->
 		<t:insertAttribute name="header" />
-	</div>
-
-	<!-- top -->
-	<div id="top" style="border: 1px solid; height: 150px">
-		<t:insertAttribute name="top" />
-	</div>
-
-	<!-- body  -->
-	<div id="body" style="border: 1px solid; height: 700px">
-		<t:insertAttribute name="body" />
-	</div>
-
-	<!-- bottom -->
-	<div id="bottom" style="border: 1px solid; height: 150px">
+		<!-- body  -->
+		<div style="margin-top: 60px;">
+			<t:insertAttribute name="body" />
+		</div>
+		<!-- bottom -->
 		<t:insertAttribute name="bottom" />
 	</div>
-
 </body>
 </html>

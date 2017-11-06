@@ -8,55 +8,71 @@
 <h1>sound_main page</h1>
 
 <script>
+
+	$(document).ready(function () {
+		
+		if("${uploadMsg}" != "")
+		alert("uploadMsg : "+"${uploadMsg}");
+	});
+
 	function addInputFile() {
 		
 		var inputFile = "<input type='file' name='sound[]' multiple onChange='addInputFile()'/>";
-		$("#addSoundFrm").append(inputFile);
+		var lastInput = $("input[type=file]").last();
+		lastInput.after(inputFile);
 	}
 	
-	function checkAndInsert (frmE) {
+	function checkAndInsert () {
 		
 		var result = true;
 		
-		var sounds = $(frmE).children("input[type=file]");
+		var frm = $("#addSoundFrm");
+		var sounds = frm.children("input[type=file]");
+		console.log(sounds.length);
 		sounds.each(function(index, sound){
 			
-			if(sound.files.length == 0) 
-				sound.remove();
+			var dotLeng = sound.value.lastIndexOf(".");
+			var endLeng = sound.value.length;
+			var soundTTC = sound.value.substring(dotLeng+1, endLeng).toLowerCase();
+			
+			if (sound.files.length == 0 || soundTTC != "mp3") {
+				
+				if(frm.children("input[type=file]").length > 1)
+					sound.remove();
+			}
 		});
 		
-		if(sounds.length == 0) {
-			alert($(frmE).attr("title")+"할 요소가 없습니다.");
+		if(frm.children("input[type=file]").last()[0].files.length == 0) {
+			
+			alert($("#addSoundFrm").attr("title")+"할 요소가 없습니다.");
 			result = false;
 		}
 		
 		if(result)
-		$("#addSoundFrm").submit();
+			frm.submit();
 	}
 	
-	function checkAndDeletet (frmE) {
+	function checkAndDeletet () {
 		
-		var sounds = $(frmE).children("input[type=file]");
-		sounds.each(function(index, sound){
-			
-			if(sound.files.length == 0) 
-				sound.remove();
-		});
+		var result = true;
+		
+		var frm = $("#delSoundFrm");		
+		var sounds = $("#delSoundFrm input").filter(":checked");
 		
 		if(sounds.length == 0) {
-			alert($(frmE).attr("title")+"할 요소가 없습니다.");
+			alert($("#delSoundFrm").attr("title")+"할 요소가 없습니다.");
 			result = false;
 		}
 		
 		if(result)
-		$("#addSoundFrm").submit();
+			frm.submit();
 	}
 </script>
 
 
 <!-- 중앙  위 가운데 네모칸 -->
 <div style="border: 1px solid; height: 500px">
-	<form id="delSoundFrm">
+	<form id="delSoundFrm" action="deleteSound.do" title="음원삭제">
 		<c:if test="${fn:length(musics)} == 0">
 			<div>음원이 없습니다.</div>
 		</c:if>
@@ -71,9 +87,11 @@
 <div style="float: left; border: 1px solid; width: 33%; height: 200px">
 	<!-- 멀티 업로드 -->
 	<form id="addSoundFrm" title="음원추가" action="insertSound.do" method="post" enctype="multipart/form-data">
-		소리 추가 하기<input type="file" name="sound[]" onChange="addInputFile()" multiple onChange="addInputFile()"/>
-		<input type="button" value="더 등록하기" onClick="addInputFile()">
-		<input type="button" value="등록" onClick="checkAndInsert()">
+		소리 추가 하기(mp3만 허용)<input type="file" name="sound[]" onChange="addInputFile()" multiple onChange="addInputFile()"/>
+		<div>
+			<input type="button" value="더 등록하기" onClick="addInputFile()">
+			<input type="button" value="등록" onClick="checkAndInsert()">
+		</div>
 	</form>
 </div>
 <!-- 중앙 왼쪽 네모칸 끝 -->
@@ -85,5 +103,5 @@
 
 <!-- 중앙 오른쪽 네모칸 -->
 <div style="float: right; border: 1px solid; width: 32%; height: 200px">소리
-	테스트하기</div>
+	테스트하기/${uploadMsg}</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->

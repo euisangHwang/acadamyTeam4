@@ -12,7 +12,6 @@
 		$("#toDetailMainFrm input").val(deviceCode);
 		$("#toDetailMainFrm").submit();
 	}
-
 </script>
 
 <form id="toDetailMainFrm" action="toDetailMain.do" method="post" style="display: none;">
@@ -31,5 +30,5 @@
 <!-- 중앙 왼쪽 네모칸 끝 -->
 
 <!-- 중앙 오른쪽 네모칸 -->
-<div style="float: right; border: 1px solid; width: 49%; height: 200px">제한구역 조회</div>
+<div style="float: right; border: 1px solid; width: 49%; height: 200px" onClick="pageSubmit('deviceSet.do')">제한구역 조회</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->

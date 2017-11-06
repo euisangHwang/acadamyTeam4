@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.itextpdf.text.log.SysoCounter;
+
 import cmmn.DateUtil;
 
 @Service
@@ -31,9 +33,18 @@ public class DeviceServiceImpl implements DeviceService{
 	
 	@Override
 	public List<Map<String, Object>> selectAllDevice(int uMCode, String deviceSort) {
+		
+		System.out.println("왔다.");
 		return deviceDao.selectAllDevice(uMCode, deviceSort);
 	}
 
+	@Override
+	public Map<String, Object> selectAllDevice(HashMap<String, Object> param) {
+		
+		System.out.println("왔다2.");
+		return deviceDao.selectAllDevice(param);
+	}
+	
 	@Override
 	public List<Map<String, Object>> selectAllMusic(int uMCode) {
 		return deviceDao.selectAllMusic(uMCode);
@@ -101,7 +112,74 @@ public class DeviceServiceImpl implements DeviceService{
 	}
 
 	@Override
-	public Map<String, Object> selectAllDevice(int deviceCode) {
-		return deviceDao.selectAllDevice(deviceCode);
+	public String deleteSound(int[] delMusics) {
+		
+		String result = "SUCCESS";
+		
+		try{
+			for(int i=0; i<delMusics.length; i++) {
+				
+				Map<String,Object> eachMusic = deviceDao.selectOneMusic(delMusics[i]);
+				String filePath = properties.getProperty("nas.path")+(String)eachMusic.get("mFullName");
+
+				File file = new File(filePath);
+				file.delete();
+				
+				deviceDao.deleteSound(delMusics[i]);
+			}
+		} catch (Exception e) {
+			result = "FAIL";
+		}
+		return result;
+	}
+	
+	@Override
+	public void insertCmd(HashMap<String, Object> param) {
+		deviceDao.insertCmd(param);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectAllDevices(int uMCode) {
+		return deviceDao.selectAllDevices(uMCode);
+	}
+
+	@Override
+	public String insertSpeakMusicMatch(HashMap<String, Object> param) {
+		
+		String result = "SUCCESS";
+		
+		try {
+			
+			deviceDao.insertSpeakMusicMatch(param);
+		} catch (Exception e) {
+			result = "FAIL";
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> selectMatchSpeakMusic(int deviceCode) {
+		return deviceDao.selectMatchSpeakMusic(deviceCode);
+	}
+
+	@Override
+	public String updateMatch(HashMap<String, Object> param) {
+		
+		String result = "SUCCESS";
+		
+		try {
+			
+			deviceDao.updateMatch(param);
+		} catch (Exception e) {
+			result = "FAIL";
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> selectHomeImg(int memberCode) {
+		return deviceDao.selectHomeImg(memberCode);
 	}
 }

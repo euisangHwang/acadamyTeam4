@@ -17,11 +17,26 @@ resultType="map">
 SELECT * FROM DEVICE 
 WHERE 1=1
 <if test="deviceSort != null and deviceSort != ''">
-MEMBERCODE = #{uMCode} AND DEVICESORT = '#{deviceSort}'
+AND MEMBERCODE = #{uMCode} AND DEVICESORT = #{deviceSort}
 </if>
 <if test="deviceCode != 0 and deviceCode != null">
-DEVICECODE = #{_parameter}
+AND DEVICECODE = #{deviceCode}
 </if>
+</select>
+
+<select id="selectAllDevices"
+parameterType = "integer"
+resultType="map">
+SELECT * FROM DEVICE WHERE MEMBERCODE = #{uMCode}
+</select>
+
+<select id="selectMatchSpeakMusic"
+parameterType = "integer"
+resultType="map">
+SELECT deviceCode, deviceName, 
+	(SELECT MUSICCODE FROM SPEAKERMUSIC WHERE DEVICECODE = #{_parameter}) musicCode
+FROM DEVICE
+WHERE DEVICECODE = #{_parameter}
 
 </select>
 
@@ -31,17 +46,84 @@ resultType="map">
 SELECT * FROM MUSIC WHERE MEMBERCODE = #{_parameter}
 </select>
 
+<select id="selectOneMusic"
+parameterType = "integer"
+resultType="map">
+SELECT * FROM MUSIC WHERE MUSICCODE = #{_parameter}
+</select>
+
 <select id="selectAllPicture"
 parameterType = "integer"
 resultType="map">
 SELECT * FROM PICTURE WHERE DEVICECODE = #{_parameter}
 </select>
 
+<select id="selectHomeImg"
+parameterType = "integer"
+resultType="map">
+SELECT P.pictureCode, P.pPath
+FROM MEMBER M INNER JOIN PICTURE P
+ON M.HOMEIMG = P.PICTURECODE
+WHERE M.MEMBERCODE = #{_parameter}
+</select>
+
+<select id="selectOnePicture"
+parameterType = "integer"
+resultType="integer">
+SELECT PICTURECODE FROM PICTURE WHERE PFULLNAME = #{_parameter}
+</select>
+
 <insert id="insertSound" parameterType="map">
 INSERT INTO MUSIC (MADD, MORINAME, MFULLNAME, MEMBERCODE) 
 VALUES (#{filePath}, #{orgFileName}, #{fullFileName}, #{uid})
-
-
 </insert>
+
+<delete id="deleteSound">
+DELETE FROM MUSIC
+WHERE MUSICCODE = #{_parameter}
+</delete>
+
+<insert id="insertCmd" parameterType="map">
+INSERT INTO COMMAND (DATE, DEVICECODE, COMANDLEVEL) 
+VALUES (NOW(), #{deviceCode}, #{comandLevel})
+</insert>
+
+<insert id="insertImg" parameterType="map">
+INSERT INTO PICTURE 
+(PPATH, pORINAME, PFULLNAME, THUMB_PPATH,
+ THUMB_PORINAME, THUMB_PFULLNAME, DATE, DEVICECODE)
+VALUES
+(#{filePath}, #{orgFileName}, #{fullFileName}, #{tFilePath}, #{tOrgFileName}, #{tfullFileName}, NOW(), #{deviceCode})
+</insert>
+
+<update id="updateImg" parameterType="map">
+UPDATE PICTURE 
+SET PPATH 		    = #{filePath}, 
+	pORINAME	    = #{orgFileName}, 
+	PFULLNAME 	    = #{fullFileName}, 
+	THUMB_PPATH	    = #{tFilePath}, 
+	THUMB_PORINAME  = #{tOrgFileName},
+	THUMB_PFULLNAME = #{tfullFileName}, 
+	DATE			= NOW(), 
+	DEVICECODE		= #{deviceCode}
+WHERE PICTURECODE   = #{beforeImgCode}
+</update>
+
+<delete id="deleteImg" parameterType="integer">
+DELETE FROM PICTURE WHERE PICTURECODE = #{_parameter}
+</delete>
+
+<insert id="insertSpeakMusicMatch" parameterType="map">
+INSERT INTO SPEAKERMUSIC
+(DEVICECODE, MUSICCODE)
+VALUES (#{speakerCode},#{musicCode})
+</insert>
+
+<update id="updateMatch" parameterType="map">
+UPDATE SPEAKERMUSIC
+SET DEVICECODE = #{speakerCode},
+	MUSICCODE = #{musicCode}
+WHERE DEVICECODE = #{speakerCode}
+</update>
 
  </mapper>
