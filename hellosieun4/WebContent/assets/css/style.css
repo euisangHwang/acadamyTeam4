@@ -8206,7 +8206,7 @@ header .add-listing:hover,
     }
 }
 
-//여기서 부터 의성이가 만든 css입니다-----------------------------------------------------------------------------------------------------------------------------------
+//�뿬湲곗꽌 遺��꽣 �쓽�꽦�씠媛� 留뚮뱺 css�엯�땲�떎-----------------------------------------------------------------------------------------------------------------------------------
 
 
 .data22 {
@@ -9490,7 +9490,7 @@ a.leaflet-popup-close-button:before {
     background-repeat: no-repeat;
     background-size: contain;
 }
-#findUser_Modal, #Join_Modal, #Login_Modal, #no-identityAuth {
+#findUser_Modal, #Join_Modal, #Login_Modal, #dDetailModel,  #no-identityAuth {
     height: 100%;
     overflow: hidden;
     display: none;
@@ -10347,4 +10347,8 @@ tr {
 }
 thead>tr {
     border-bottom: 1px solid #333;
+}
+.nav>li.beforeLogin, .nav>li.afterLogin {
+	
+	display: none;
 }

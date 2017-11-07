@@ -17,8 +17,60 @@
 		$("button[name=devCode]").click(function () {
 			
 			var $this = $(this);
-			$("#devDetailFrm input").val($this.attr("title"));
+/* 			$("#devDetailFrm input").val($this.attr("title"));
 			$("#devDetailFrm").submit();
+			 */
+			$.ajax({
+				
+				url 	: "deviceDetail2.do",
+				type	: "post",
+				data	: {"deviceCode":$this.attr("title")},
+				async	: false,
+				success : function (result) {
+					//matchInfo - deviceCode,deviceName,musicCode/musics(musicCode,mOriName)
+					var toResult = JSON.parse(result);
+					var matchInfo = toResult.matchInfo;
+					var musics = toResult.musics;
+					
+					//action,버튼 설정
+					if(matchInfo.musicCode) {
+						
+						$("#matchFrm").attr("action", "updateMatch.do");
+						$("#matchFrm input[type=submit]").val("변경");
+					} else {
+						
+						$("#matchFrm").attr("action", "matchSpeack_Music.do");
+						$("#matchFrm input[type=submit]").val("등록");
+					}
+					
+					//matchInfo 셋팅
+					$("#matchFrm input[type=hidden]").val(matchInfo.deviceCode);
+					$("#matchFrm div[title=deviceName]").text("장치명 : "+matchInfo.deviceName);
+					
+					if(musics.length == 0)
+						$("#matchFrm div[title=musicList]").text("음원이 없습니다.");
+					else {
+						
+						var options = "";
+						musics.forEach(function (music, index) {
+							
+							options += "<option value='"+music.musicCode+"'";
+							if(matchInfo.musicCode == music.musicCode)
+							{options += "selected"};
+							options +=  ">"+music.mOriName+"</option>";
+						});
+						
+						$("#matchFrm div[title=musicList] select").append(options);
+					}
+					
+					$("#dDetailModel").modal();
+					
+				},error : function () {
+					
+				}
+				
+				
+			})
 		});
 	});
 </script>
@@ -40,10 +92,10 @@
 		</c:if>
 		<c:forEach items="${devices}" var="devices">
 			<c:if test="${devices.deviceSort =='speaker'}">
-				<button name="devCode" title="${devices.deviceCode}">${devices.deviceSort}${devices.deviceCode}</button>
+				<button type="button" name="devCode" title="${devices.deviceCode}">${devices.deviceSort}${devices.deviceCode}</button>
 			</c:if>
 			<c:if test="${devices.deviceSort =='sensor'}">
-				<button name="devCode2" title="${devices.deviceSort}" disabled>${devices.deviceSort}${devices.deviceCode}</button>
+				<button type="button" name="devCode2" title="${devices.deviceSort}" disabled>${devices.deviceSort}${devices.deviceCode}</button>
 			</c:if>
 		</c:forEach>
 </div>

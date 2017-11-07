@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <fmt:requestEncoding value="UTF-8"/>
 
   <head>
@@ -14,15 +15,6 @@
     <script src="assets/lib/jquery.min.js"></script>
     <script src="assets/lib/jquery-ui.js"></script>
     <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
-    
-   	<script>
-	
-		$(document).ready(function () {
-			
-			console.log("head");
-		});
-		
-	</script>
     
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
 	integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
@@ -55,27 +47,199 @@
     <link href="assets/css/uploadfile.css" rel="stylesheet" type="text/css" />
     <!-- jquery-ui css -->
     <link href="assets/css/jquery-ui.css" rel="stylesheet" type="text/css" />
-    
-    
-    <!-- Daum map -->
-    <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=10d44bdc22885a555686cd67fdb5b69b&libraries=services,clusterer"></script>
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9] for blog-option>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!--[if lt IE 9] for cities-option>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!--[if lt IE 9] for contact, fag, forgot-password, etc...>
-      <script src="assets/lib/html5shiv-master/dist/html5shiv.min.js"></script>
-      <script src="assets/lib/Respond-master/dest/respond.min.js"></script>
-    <![endif]-->
   </head>
+<form id="pSubmit" method="post">
 
-<script src="<%=request.getContextPath()%>/assets/lib/jquery-1.5.js"></script>
+</form>
+
+			<div id="Login_Modal2" style="margin-top:100px;"  class="login-modal modal fade" role="dialog" aria-hidden="true">
+               <div class="modal-dialog">
+                   <!-- Modal content-->
+                   <div class="modal-content">
+                       <div class="login-failed-desc">
+                           <em class="icon-ban"></em>
+                       </div>
+                       <div class="row loginModalRow">
+                           <div class="hidden-lg hidden-md hidden-sm col-xs-12 loginModalBar">
+                               로그인
+                               <button type="button" class="closeModalButton" data-dismiss="modal"><em class="fa fa-close"></em></button>
+                           </div>
+                       </div>
+                       <!-- 로그인 버튼 눌렀을때 모달창 가려지는 마스크 -->
+                       <div class="modal-header">
+                       </div>
+                       <div class="modal-login-button" id="modal_LoginForm">
+
+                           <div id="social-login-button">
+<!--                                  <div class="facebookLoginButton"><img src="http://moccozy.blob.core.windows.net/icon/icon_modal_facebook.png" />페이스북으로 시작하기</div> -->
+                           </div>
+                           <div class="login-or-separator" style="text-align: center;">
+                               <span class="h6 signup-or-separator-text">또는</span>
+                           </div>
+                           <form method="post" accept-charset="utf-8" action="userLogin.do" id="formLoginUser" name="formLoginUser">
+                               <div class="form-group" id="input-UserEmail">
+                                   <div class="icon-addon addon-md">
+                                       <input id="uid" class="form-control" name="uid" type="text" placeholder="아이디">
+                                   </div>
+                               </div>
+                               
+                               <div class="form-group" id="input-UserPassword">
+                                   <div class="icon-addon addon-md">
+                                       <input id="upass" class="form-control" name="upass" type="text" placeholder="패스워드">
+                                   </div>
+                               </div>
+                               
+                               <div class="form-group" id="input-KeepLoginWrap">
+                                   <a class="forgotIDandPASS" href="#" data-toggle="modal" data-target="#findUser_Modal" data-keyboard="false" id="findUserModal_button">비밀번호를 잊으셨나요?</a>
+                               </div>
+                               <span id="login-false-desc"></span>
+                               <input type="hidden" name="applicationType" value="0" />
+                               <center><button style="width: 83%;" class="btn btn-large btn-default">로그인</button></center>
+                           </form>
+                       </div>
+                       <div class="modal-footer" id="login-Modal-Footer">
+                           <p class="modal-footer-desc">
+                               	아이디가 없으신가요?
+                               <button type="button" class="btn btn-default " id="joinUserButton" data-toggle="modal" data-target='#Join_Modal' onclick="modalChange()">회원가입</button>
+                           </p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+
+			<div id="Join_Modal" style="margin-top:100px;" name="aa" class="join-modal modal fade" role="dialog" aria-hidden="true" >
+                <div class="modal-dialog">
+                    <div class="login-failed-desc">
+                        <em class="icon-ban"></em>
+                    </div>
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="row loginModalRow">
+                            <div class="hidden-lg hidden-md hidden-sm col-xs-12 loginModalBar">
+                               	 회원가입
+                                <button type="button" class="closeModalButton" data-dismiss="modal"><em class="fa fa-close"></em></button>
+                            </div>
+                        </div>
+                        <div class="registerMask">
+                           <!--  <img class="loadingImage" src="http://moccozy.blob.core.windows.net/icon/loading_medium.gif" /> -->
+                        </div>
+                        <div class="modal-header"></div>
+                        <div class="modal-body">
+                            <form id="email-Join-Form" method="post" accept-charset="utf-8">
+								<div class="emailGroup" style="text-align: center;">
+	                                <input type="text" title="email" style="width:290px;; display: inline-block;" class="form-control" name="email" placeholder="이메일을 입력해주세요" autocomplete="off" />
+	                                <div class="card-selector-container" style="text-align: center; vertical-align: middle; width: 178px; display: inline-block; border-radius: 4px;">
+		                                <div id="emailSelect" class="card-selector dropdown-toggle" style="padding: 0px;" data-toggle="dropdown" aria-expanded="false">
+		                                	<div style="padding-left:10px; display: table-cell; vertical-align: middle;">@</div>
+		                                	<div class="title">이메일 직접입력</div>
+		                        			<div class="button" style="background: rgba(255,255,255,0.7);">
+												<em class="fa fa-sort-desc"></em>
+											</div>
+		                                </div>
+	                                    <ul id="emailC" class="card-selector-list dropdown-menu open" role="menu" aria-labelledby="emailSelect" style="top:55px;">
+	                                		<li>naver.com</li>
+	                                		<li>daum.net</li>
+	                                		<li>gmail.com</li>
+	                                		<li>이메일 직접입력</li>
+	                                	</ul>
+		                            </div>
+                                </div>
+                                <div id="userId_validation" class="join-validation" style="margin-left: 48.281px;"></div>
+                                
+                                <div class="emailGroup" style="text-align: center;">
+                                	<input type="password" title="password" class="form-control" name="password" maxlength="16" placeholder="특수문자를 제외한 6자 이상으로 입력해주세요." autocomplete="off" />
+                                </div>
+                                <div class="join-validation"></div>
+			
+								<div class="emailGroup" style="text-align: center;">
+                                <input type="text" title="userName" class="form-control" name="userName" placeholder="사용자 이름을 입력해주세요" />
+                                </div>
+                                <div class="join-validation"></div>
+                                
+                                
+                                <div class="verify" style="width:83%; margin: 10px auto;">
+                                    <input type="tel" title="userPhone" name="userPhone" class="form-control" placeholder="휴대폰 번호 입력( '-' 제외 ) " maxlength="11" />
+                                    <button type="button" style="margin-left:6px; width:22%; height:51px;" class="btn btn-primary phoneVertifyButton" id="phoneVerifiedButton">인증하기</button>
+                                </div>
+                                <div class="join-validation"></div>
+                                
+                                <div class="verify" style="width:83%; margin: 10px auto;">
+                                    <input type="text" title="autoCode" name="authCode" class="form-control" placeholder="인증번호 입력" maxlength="6" disabled="disabled" />
+                                    <button type="button" style="margin-left:6px; width:22%; height:51px;" class="btn btn-primary phoneVertifyButton" id="authCodeButton">확인</button>
+                                </div>
+                                <div class="timer" style="display:none;">
+                                    	인증번호가 발송되었습니다. ( 유효시간 : <span id="timerMinutes"></span> 분 <span id="timerSecond"></span> 초 )
+                                </div>
+                                <div style="width:83%; margin: 10px auto;">
+									<div class="_radio radio-inline">
+									  <input type="radio" name="sex" id="sex0" value="남자">
+									  <label for="sex0" style="margin-right: 30px;"><mark></mark>남자</label>
+									</div>
+									<div class="_radio radio-inline">
+									  <input type="radio" name="sex" id="sex1" value="여자">
+									  <label for="sex1"><mark></mark>여자</label>
+									</div>
+                                    <div id="gender_validation" class="join-validation" style="margin:0;"></div>
+                                </div>
+
+                                <div class="agreement-description" style="width:83%; margin: 10px auto;">
+                                    회원가입을 하면 모꼬지의
+                                    <a href="http://www.moccozy.com/term/serviceUse">서비스 이용약관</a>,
+                                    <a href="http://www.moccozy.com/term/userPrivate">개인 정보 보호 정책</a>,
+                                    <a href="http://www.moccozy.com/term/location">위치정보 서비스 이용약관</a>
+                                    에 동의하는 것으로 간주됩니다
+                                </div>
+                                <center><button style="width: 83%; height: 51px;" type="button" id="joinSubmit" class="btn btn-primary joinSubmit" onClick="resultCheck('userJoin')">회원가입</button></center>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer" id="login-Modal-Footer">
+                            <p class="modal-footer-desc">
+                                이미 모꼬지 회원이신가요 ?
+                                <button type="button" class="btn btn-large btn-default" id="backLoginModal" data-toggle="modal" data-target='#Login_Modal2' onclick="modalChange()">로그인</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+            
+			<div id="dDetailModel" style="margin-top:100px;" name="aa" class="join-modal modal fade" role="dialog" aria-hidden="true" >
+				<div class="modal-dialog">
+		            <!-- Modal content-->
+		  	        <div class="modal-content">
+                       <!-- 로그인 버튼 눌렀을때 모달창 가려지는 마스크 -->
+                       <div class="modal-header">
+                       		<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                       </div>
+                       <div class="modal-body">
+							<form id="matchFrm" action="matchSpeack_Music.do" method="post">
+								<input type="hidden" name="speakerCode" value="${matchInfo.deviceCode}"/>
+								<div title="deviceName">장치명 : ${matchInfo.deviceName}</div>	
+								<div title="musicList">		
+									<c:if test="${fn:length(musics)} == 0">
+											<div>음원이 없습니다.</div>
+									</c:if> 
+									<select name="musicCode">
+										<c:forEach items="${musics}" var="musics">
+											<c:if test="${matchInfo.musicCode eq musics.musicCode}">
+												<option value="${musics.musicCode}" selected>${musics.mOriName}</option>
+											</c:if>
+											<c:if test="${matchInfo.musicCode ne musics.musicCode}">
+												<option value="${musics.musicCode}">${musics.mOriName}</option>
+											</c:if>
+										</c:forEach>
+									</select>
+								</div>
+								<input type="submit" value="저장">
+						</div>
+						<div class="modal-footer">
+							<input type="button" value="소리 테스트하기">
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 <script>
 
 	function pageSubmit (pageName) {
@@ -83,9 +247,16 @@
 		$("#pSubmit").attr("action",pageName);
 		$("#pSubmit").submit();
 	}
+	
+	function modalChange () {
+		
+		$("#Login_Modal2").modal("hide");
+		$("#Join_Modal").modal("hide");
+	}
+	 	
+	$(document).ready(function () {
+		
+		console.log("head");
+	});
 
-</script>
-
-<form id="pSubmit" method="post">
-
-</form>
+</script>            

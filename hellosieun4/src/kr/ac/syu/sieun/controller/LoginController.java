@@ -31,6 +31,14 @@ public class LoginController {
 		return "login/login.tiles";
 	}
 	
+	@RequestMapping(value = "logout.do", method = {RequestMethod.GET, RequestMethod.POST })
+	public String logout(HttpServletRequest req) {
+		
+		req.getSession().invalidate();
+		
+		return "login/login.tiles";
+	}
+	
 	@RequestMapping(value = "isUser.do", method = {RequestMethod.GET, RequestMethod.POST })
 	public String isUser(HttpServletRequest req, Model model) throws Exception {
 		logger.info("Welcome LoginController login! "+ new Date());

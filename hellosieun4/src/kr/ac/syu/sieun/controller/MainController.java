@@ -1,10 +1,12 @@
 package kr.ac.syu.sieun.controller;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import cmmn.JsonUtil;
 import kr.ac.syu.sieun.dao.DeviceService;
 
 @Controller
@@ -178,6 +181,29 @@ public class MainController {
 		}
 		
 		return page;
+	}
+	
+	@RequestMapping(value="deviceDetail2.do")
+	public void deviceDetail2 (HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+		res.setCharacterEncoding("UTF-8");
+		HashMap<String,Object> toMap = new HashMap<String,Object>();
+		
+		int memberCode = (int)req.getSession().getAttribute("sessMCode");
+		int deviceCode = Integer.parseInt(req.getParameter("deviceCode"));
+		
+		if(memberCode != 0) {
+			//음악목록 가져오기
+			List<Map<String,Object>> musics =  deviceService.selectAllMusic(memberCode);
+			//장치정보 + 매치된 음원정보 가져오기
+			Map<String,Object> matchInfo = deviceService.selectMatchSpeakMusic(deviceCode);
+			
+			toMap.put("musics", musics);
+			toMap.put("matchInfo", matchInfo);
+		}
+		
+		PrintWriter out = res.getWriter();
+		out.write(JsonUtil.HashMapToJson(toMap));
 	}
 	
 	@RequestMapping(value="matchSpeack_Music.do")

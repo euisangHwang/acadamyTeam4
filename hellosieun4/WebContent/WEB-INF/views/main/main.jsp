@@ -32,3 +32,8 @@
 <!-- 중앙 오른쪽 네모칸 -->
 <div style="float: right; border: 1px solid; width: 49%; height: 200px" onClick="pageSubmit('deviceSet.do')">제한구역 조회</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->
+
+<!-- Main Javascript -->
+<script src="assets/js/main.js"></script>
+<script src="assets/js/test.js" type="dumb"></script>
+<script src="assets/js/jquery.uploadfile.js" type="text/javascript"></script>
