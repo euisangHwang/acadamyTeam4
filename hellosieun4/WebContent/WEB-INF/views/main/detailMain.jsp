@@ -17,7 +17,7 @@
 </script>
 
 <div>
-	cctv나올 화면
+	<img src="http://210.94.241.121:8080/?action=stream">
 </div>
 
 <form id="toShowPictursFrm" action="toShowPicture.do">

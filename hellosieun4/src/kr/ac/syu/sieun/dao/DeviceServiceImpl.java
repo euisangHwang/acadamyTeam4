@@ -1,6 +1,7 @@
 package kr.ac.syu.sieun.dao;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,15 +11,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.itextpdf.text.log.SysoCounter;
 
 import cmmn.DateUtil;
 
@@ -30,6 +29,9 @@ public class DeviceServiceImpl implements DeviceService{
 	
 	@Resource(name="fileServer")
 	private Properties properties;
+	
+	@Resource(name="ftpUser")
+	private Properties ftpProperties;
 	
 	@Override
 	public List<Map<String, Object>> selectAllDevice(int uMCode, String deviceSort) {
@@ -57,52 +59,94 @@ public class DeviceServiceImpl implements DeviceService{
 		int uid = (int)mreq.getSession().getAttribute("sessMCode");
 		Map<String,Object> params = new HashMap<String,Object>();
 		Iterator<String> targetFNames = mreq.getFileNames();
+		System.out.println("targetNames 투스트링 ::: "+targetFNames.toString());
+		
+		//FTP 정보
+		String host = ftpProperties.getProperty("host");
+		String port = ftpProperties.getProperty("availableServerPort");
+		String userid = ftpProperties.getProperty("userid");
+		String password = ftpProperties.getProperty("password");
+		String remoteFilePath = "";
 		
 		try {
-			while(targetFNames.hasNext()) {
+			int numnum = 0;
+			if(targetFNames.hasNext()) {
 				
+				numnum++;
+				
+			//객체생성 파트	
 				//파일객체 생성
 				String targetFName = targetFNames.next();
-				MultipartFile mFile = mreq.getFile(targetFName);
+				System.out.println("targetName ::: "+targetFName);
+				//FTP객체 생성
+				FTPClient ftp = new FTPClient();
+				ftp.setControlEncoding("UTF-8");  // 문자 코드를 UTF-8로 인코딩
+				ftp.connect(host, Integer.parseInt(port));
+				ftp.login(userid, password);
+				ftp.enterLocalPassiveMode(); // Passive Mode 접속일 때
+				ftp.changeWorkingDirectory(remoteFilePath);
+				ftp.setFileType(FTP.BINARY_FILE_TYPE);
 				
-				//파일 이름 조정
-				String nowDate = DateUtil.getDateTime();
-				String orgFileName = mFile.getOriginalFilename();
-				String fullFileName = nowDate+orgFileName;
 				
-				//경로 설정
-					//서버 경로
-/*					String nasPath = fileServerProperty.getProperty("nas.path");
-					String fServerPath = fileServerProperty.getProperty("ddns.path");*/
+			//작업 파트
+				List<MultipartFile> multiFile = mreq.getFiles(targetFName);
+				
+				for(int i=0; i<multiFile.size(); i++) {
+
+				//업로드	
+					MultipartFile mFile = multiFile.get(i);
 					
-					//파일 경로 설정(파일생성용)
-					String orgNasfilePath = properties.getProperty("nas.path")+fullFileName;
-					String filePath = properties.getProperty("ddns.path")+fullFileName;
-				
-				//파일 생성 절차
+					//파일 이름 조정
+					String nowDate = DateUtil.getDateTime();
+					String orgFileName = mFile.getOriginalFilename();
+					String fullFileName = nowDate+orgFileName;
 					
-					//원본파일 생성
-					byte[] img = mFile.getBytes();
-					FileOutputStream oStream = new FileOutputStream(orgNasfilePath);
-					oStream.write(img);
-					oStream.close();
-				
+					//경로 설정
+						//서버 경로
+	/*					String nasPath = fileServerProperty.getProperty("nas.path");
+						String fServerPath = fileServerProperty.getProperty("ddns.path");*/
+						
+						//파일 경로 설정(파일생성용)
+						String orgNasfilePath = properties.getProperty("nas.path")+fullFileName;
+						String filePath = properties.getProperty("ddns.path")+fullFileName;
 					
-				//저장된 파일 정보 추출
-				File file = new File(orgNasfilePath);
-				
-				//파라미터 정리
-				params.put("orgFileName", orgFileName);
-				params.put("fullFileName", fullFileName);
-				params.put("filePath", filePath);
-				params.put("uid", uid);
-				
-				deviceDao.insertSound(params);
+					//파일 생성 절차
+						//원본파일 생성
+						byte[] img = mFile.getBytes();
+						FileOutputStream oStream = new FileOutputStream(orgNasfilePath);
+						System.out.println("beforeWrite ::: "+numnum);
+						oStream.write(img);
+						System.out.println("afforeWrite ::: "+numnum);
+						oStream.close();
+						System.out.println("afterClose ::: "+numnum);
+						
+					//저장된 파일 정보 추출
+					File file = new File(orgNasfilePath);
+					
+					//파라미터 정리
+					params.put("orgFileName", orgFileName);
+					params.put("fullFileName", fullFileName);
+					params.put("filePath", filePath);
+					params.put("uid", uid);
+					
+					deviceDao.insertSound(params);
+					
+				//FTP업로드
+					FileInputStream iStream = new FileInputStream(file);
+					boolean isSuccess = ftp.storeFile(orgFileName, iStream);
+					
+					if(!isSuccess)
+						result = "FAIL";
+					
+					iStream.close();
+					ftp.logout();
+					ftp.disconnect();
+				}
 			}
 		} catch (IOException e) {
 			result = "FAIL";
+			System.out.println(e.getMessage());
 		}
-		
 		return result;
 	}
 
@@ -181,5 +225,10 @@ public class DeviceServiceImpl implements DeviceService{
 	@Override
 	public Map<String, Object> selectHomeImg(int memberCode) {
 		return deviceDao.selectHomeImg(memberCode);
+	}
+
+	@Override
+	public List<Map> selectCmd(int deviceCode) {
+		return deviceDao.selectCmd(deviceCode);
 	}
 }

@@ -88,6 +88,11 @@ public class DeivceDao {
 		String ns = "sieun.Devices.";
 		return sqlSession.selectOne(ns+"selectHomeImg", memberCode);
 	}
+
+	public List<Map> selectCmd(int deviceCode) {
+		String ns = "sieun.Devices.";
+		return sqlSession.selectList(ns+"selectCmd", deviceCode);
+	}
 	
 	
 }

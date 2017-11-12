@@ -24,6 +24,8 @@
     <!-- Google Font(s) -->
     <link href="https://fonts.googleapis.com/css?family=Capriola|Roboto" rel="stylesheet">
 
+ 	<!-- Daum map -->
+    <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=10d44bdc22885a555686cd67fdb5b69b&libraries=services,clusterer"></script>
     <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
     <!-- Bootstrap-->
     <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -48,6 +50,246 @@
     <!-- jquery-ui css -->
     <link href="assets/css/jquery-ui.css" rel="stylesheet" type="text/css" />
   </head>
+  
+  <script>
+  
+		//회원가입 관리
+		var signUp = {
+			
+			certify : {phoneCertify : false, duplicateCertify : false},
+			allCertify : false,
+			ranNum : Math.floor(Math.random() * 999999) + 1,	
+			phoneNumber : "",
+				
+			//핸드폰 인증번호 발송
+			sendSMSMsg : function (BtnEle, callback) {
+				
+				var $this = this;
+				var $target = $(BtnEle);
+				var $phone = $target.prev();
+				this.phoneNumber = $phone.val();
+				//휴대폰 번호 nullcheck
+				alert("폰번호 : "+$phone.val()+" / ranNum : "+this.ranNum);
+				
+				if($phone.val()) {
+				
+					if($phone.val().search(/^01[016789]-\d{4}-\d{4}$/) == -1) {
+						
+						alert($phone.attr("title")+"의 형식이 올바르지 않습니다.");
+						return false;
+					} 
+				} else {
+					
+					alert($phone.attr("title")+"을 입력해주세요.");
+					return false;
+				} 
+				
+				$.ajax({
+					
+					url 	: "sendSMSMsg.do",
+					data	: {msg : "인증번호 : "+$this.ranNum, rphone : $phone.val()},
+					async	: false,
+					success : function (sendResult) {
+						
+						if(sendResult == "success") {
+							//번호입력칸 출력 -> 기존 버튼 삭제
+							var inputForNum = "<input type='text' placeholder='인증번호를 입력하세요'/>"
+											  +"<button type='button' onClick='signUp.checkSMSMsg(this, "+callback+")'>인증하기</button>";
+							$target.after(inputForNum);
+							$target.remove();
+						}
+						
+					}, error: function () {}
+					
+				})
+			},
+			
+			//핸드폰 인증번호 검사
+			checkSMSMsg : function (inputEle, callback) {
+				
+				$this = this;
+				$num = 	$(inputEle).prev();
+				
+				if($num.val().trim() == this.ranNum) {
+					
+					//휴대폰 번호 중복검사
+					$.ajax({
+						
+						url		: "findIdByPhone.do",
+						data	: {phone : $this.phoneNumber},
+						async	: false,
+						success : function (findResult) {
+							
+							//중복x면
+							if (findResult == "FAIL") {
+								
+								alert("인증되었습니다.");
+								$this.certify["phoneCertify"] = true;
+								
+								if($this.certify["duplicateCertify"] == true)
+									$this.allCertify = true;
+								
+								if(callback != undefined)
+									callback();
+								
+							} else {
+								
+								alert("해당 휴대폰은 이미 다른 사용자에게 인증되었습니다.");
+							}
+						},error	: function () {
+							
+							
+						}
+					})
+				} else {
+					
+					alert("인증번호가 알맞지 않습니다. 다시입력하세요.");
+					$num.val("");
+				}
+			},
+			
+			//아이디 중복검사
+			checkDuplicate : function (BtnEle) {
+				
+				$this = this;
+				$target = $(BtnEle).prev().val();
+				
+				if(!$target) {
+					
+					alert("아이디를 입력해주세요.");
+					return false;
+				}
+				
+				$.ajax({
+					
+					url 	: "checkUserDuplicate.do",
+					data 	: {userId : $target},
+					asyc	: false,
+					success : function (result) {
+						
+						alert(result);
+						
+						if(result == "FINE") {
+							
+							$this.certify["duplicateCertify"] = true;
+							if($this.certify["phoneCertify"])
+								this.allCertify = true;
+								
+							alert("사용해도 좋은 아이디 입니다.");
+						} else 
+							alert("중복된 아이디 입니다. 다시 입력해주세요.");
+						
+					}, error: function (result) {
+						
+						alert("error");
+					}
+				})
+				
+			},
+			
+			//all 인증 통과여부 확인
+			checkCertify : function () {
+				
+				if(!this.allCertify) {
+					
+					if(!this.certify["duplicateCertify"]) 
+						alert("중복확인 체크를 완료하세요.");
+					 else 
+						alert("휴대폰 인증을 완료하세요.");					
+					
+					return false;
+				} else
+					return true;	
+			}
+		}
+  	
+		
+		//아이디 찾기
+		function findIdByPhone () {
+			
+			var phoneVar = $("#findId .phone").val();
+			
+			$.ajax({
+				
+				url		: "findIdByPhone.do",
+				data	: {phone : phoneVar},
+				async	: false,
+				success : function (findResult) {
+					
+					if (findResult == "FAIL") {
+						alert("아이디 찾기에 실패했습니다.");
+					}
+					
+					var findedId = "<div>아이디 : "+findResult+"</div>";
+					$("#findId .findGroup").append(findedId);
+					
+				},error	: function () {
+					
+					
+				}
+			})
+			
+		}
+		
+		//비밀번호 찾기 (부가기능)
+		function findPwByPhone () {
+			
+			//핸드폰 인증 후, 해당 핸드폰 번호가 회원정보와 일치하는지 체크
+			var idVar = $("#findPw .userId").val();
+			var phoneVar = $("#findPw .phone").val();
+			
+			$.ajax({
+				
+				url 	: "checkPhone.do",
+				data	: {id : idVar, phone : phoneVar},
+				async	: false,
+				success : function (checkResult) {
+					
+					if(checkResult == "isValid") {
+						
+						var inputNewPw = "<div>"
+									   +	"<input id='newPw' type='text'/>"
+									   +	"<button type='button' onClick='updatePw()'>변경하기</button"
+									   + "</div>";
+							
+						$("#findPw .findGroup").append(inputNewPw);
+					}
+					
+				}, error: function () {}
+				
+			})
+		}
+		
+		//새 비밀번호로 변경
+		function updatePw () {
+			
+			var idVar = $("#findPw .userId").val();
+			var newPwVar = $("#newPw").val();
+			
+			$.ajax({
+				
+				url		: "updatePw.do",
+				data	: {id : idVar, newPw : newPwVar},
+				async	: false,
+				success : function (updateResult) {
+					
+					if (updateResult == "FAIL") {
+						alert("새 비밀번호 변경에 실패했습니다.");
+					}
+						alert("비밀번호가 변경되었습니다.");
+						window.location.href = "login.do";
+					
+				},error	: function (updateResult) {
+					
+					alert("error : "+updateResult);
+				}
+			})
+		}		
+		
+		
+		
+  </script>
+  
 <form id="pSubmit" method="post">
 
 </form>

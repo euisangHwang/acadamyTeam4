@@ -3,6 +3,7 @@ package kr.ac.syu.sieun.dao;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -15,5 +16,17 @@ public interface SignUpService {
 	HashMap<String, Object> selectOneMember(int memberCode) throws Exception;
 
 	String updateMember(MultipartHttpServletRequest req) throws Exception;
+
+	String sendSMSMsg(HttpServletRequest req, HttpServletResponse res) throws Exception;
+
+	String IsUserIdDuplicate(String userId) throws Exception;
+
+	String findIdByPhone(String phone) throws Exception;
+
+	String checkPhone(HashMap<String, Object> param) throws Exception;
+
+	String updatePw(HashMap<String, Object> param) throws Exception;
+
+	
 
 }

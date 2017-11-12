@@ -32,5 +32,7 @@ public interface DeviceService {
 	String updateMatch(HashMap<String, Object> param);
 
 	Map<String, Object> selectHomeImg(int memberCode);
+
+	List<Map> selectCmd(int deviceCode);
 	
 }

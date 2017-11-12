@@ -44,6 +44,22 @@ public class SingUpDao {
 		sqlSession.selectOne(ns+"deleteImg", beforeImgCode);
 	}
 
+	public int isUserIdDuplicate(String userId) {
+		return sqlSession.selectOne(ns+"isUserIdDuplicate", userId);
+	}
+
+	public String findIdByPhone(String phone) {
+		return sqlSession.selectOne(ns+"findIdByPhone", phone);
+	}
+
+	public void updatePw(HashMap<String, Object> param) {
+		sqlSession.update(ns+"updatePw", param);
+	}
+
+	public int checkPhone(HashMap<String, Object> param) {
+		return sqlSession.selectOne(ns+"checkPhone", param);
+	}
+
 	
 	
 }

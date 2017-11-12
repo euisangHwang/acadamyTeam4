@@ -18,6 +18,24 @@ resultType="integer">
 SELECT MEMBERCODE mCode FROM MEMBER WHERE ID = #{uid} AND PW = #{upass}
 </select>
 
+<select id="isUserIdDuplicate"
+parameterType = "String"
+resultType="integer">
+SELECT COUNT(*) FROM MEMBER WHERE ID = #{_parameter}
+</select>
+
+<select id="findIdByPhone"
+parameterType = "String"
+resultType="String">
+SELECT ID FROM MEMBER WHERE TEL = #{_parameter}
+</select>
+
+<select id="checkPhone"
+parameterType = "map"
+resultType="integer">
+SELECT COUNT(*) FROM MEMBER WHERE ID = #{id} AND TEL = #{phone}
+</select>
+
 <insert id="insertMember" parameterType="map">
 INSERT INTO MEMBER (ID, PW, TEL, NAME, ADDRESS, HOMEIMG)
 VALUES(#{id},#{pw},#{tel},#{name},#{address}, #{homeimg})
@@ -32,6 +50,12 @@ SET ID 		= #{id},
 	ADDRESS = #{address},
 	HOMEIMG = #{homeimg}
 WHERE MEMBERCODE   = #{memberCode}
+</update>
+
+<update id="updatePw" parameterType="map">
+UPDATE MEMBER
+SET PW	    = #{newPw}
+WHERE ID   = #{id}
 </update>
 
 

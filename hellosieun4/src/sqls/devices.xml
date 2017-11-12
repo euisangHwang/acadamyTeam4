@@ -83,6 +83,10 @@ DELETE FROM MUSIC
 WHERE MUSICCODE = #{_parameter}
 </delete>
 
+<select id="selectCmd" parameterType="integer" resultType="map">
+SELECT * FROM COMMAND WHERE deviceCode = #{_parameter}
+</select>
+
 <insert id="insertCmd" parameterType="map">
 INSERT INTO COMMAND (DATE, DEVICECODE, COMANDLEVEL) 
 VALUES (NOW(), #{deviceCode}, #{comandLevel})

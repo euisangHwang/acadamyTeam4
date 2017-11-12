@@ -13,9 +13,14 @@
 			<td><input id="upass" name="upass" type="text" placeholder="패스워드"></td>
 		</tr>
 		<tr>
-			<td><input type="submit" value="로그인"><input type="button" value="회원가입하기" onclick="pageSubmit('signUp.do')"/></td>
-			<td></td>
+			<td>
+				<input type="button" value="ID/PW 찾기" onclick="pageSubmit('toFindIdPw.do')"/>
+				<input type="button" value="회원가입하기" onclick="pageSubmit('signUp.do')"/>
+				<input type="submit" value="로그인">
+			</td>
 		</tr>
 	</table>
 </form>
+
+
 
