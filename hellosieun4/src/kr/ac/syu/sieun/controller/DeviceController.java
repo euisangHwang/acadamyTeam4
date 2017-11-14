@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cmmn.JsonUtil;
 import kr.ac.syu.sieun.dao.DeviceService;
@@ -22,7 +25,7 @@ public class DeviceController {
 	@Autowired
 	private DeviceService deiviceService;
 	
-	@RequestMapping(value="insertCmd.do")
+	@RequestMapping(value="insertCmd.do", method = {RequestMethod.GET, RequestMethod.POST })
 	public void insertCmd (HttpServletRequest req) throws Exception {
 		
 		HashMap<String,Object> param = new HashMap<String, Object>();
@@ -44,4 +47,13 @@ public class DeviceController {
 		PrintWriter out = res.getWriter();
 		out.write(JsonUtil.ListToJson(cmdInfo));
 	}
+	
+	@RequestMapping(value="updateCmdWork.do", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String updateCmdWork (@RequestParam int comCode) throws Exception {
+		
+		String result = deiviceService.updateCmdWork(comCode);
+		return result;
+	}
+	
 }

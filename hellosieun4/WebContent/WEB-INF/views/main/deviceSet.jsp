@@ -46,6 +46,7 @@
 					//matchInfo 셋팅
 					$("#matchFrm input[type=hidden]").val(matchInfo.deviceCode);
 					$("#matchFrm div[title=deviceName]").text("장치명 : "+matchInfo.deviceName);
+					$("#matchFrm input[type=button]").attr("onClick","insertCmd("+matchInfo.deviceCode+",2)");
 					
 					if(musics.length == 0)
 						$("#matchFrm div[title=musicList]").text("음원이 없습니다.");

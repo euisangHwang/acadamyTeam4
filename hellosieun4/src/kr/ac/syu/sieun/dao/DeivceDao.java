@@ -93,6 +93,11 @@ public class DeivceDao {
 		String ns = "sieun.Devices.";
 		return sqlSession.selectList(ns+"selectCmd", deviceCode);
 	}
+
+	public void updateCmdWork(int comCode) {
+		String ns = "sieun.Devices.";
+		sqlSession.update(ns+"updateCmdWork", comCode);
+	}
 	
 	
 }

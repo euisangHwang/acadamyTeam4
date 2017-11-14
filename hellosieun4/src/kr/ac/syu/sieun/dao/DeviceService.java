@@ -34,5 +34,7 @@ public interface DeviceService {
 	Map<String, Object> selectHomeImg(int memberCode);
 
 	List<Map> selectCmd(int deviceCode);
+
+	String updateCmdWork(int comCode);
 	
 }

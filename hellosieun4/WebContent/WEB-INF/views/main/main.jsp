@@ -4,19 +4,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:requestEncoding value="UTF-8"/>
 
-<h1>body default page</h1>
-
 <script>
+
 	function toDetailMain (deviceCode) {
 		
+		insertCmd(deviceCode,3);
 		$("#toDetailMainFrm input").val(deviceCode);
 		$("#toDetailMainFrm").submit();
 	}
+
 </script>
+
+<h1>body default page</h1>
 
 <form id="toDetailMainFrm" action="toDetailMain.do" method="post" style="display: none;">
 	<input type="hidden" name="deviceCode" value=""/>
-</form>
+</form> 
 
 <c:forEach items="${devices}" var="devices">
 	<div style="width: 30%;" onClick="toDetailMain('${devices.deviceCode}')">

@@ -53,6 +53,20 @@
   
   <script>
   
+  		//커멘드 입력
+		function insertCmd (deviceCode, comandLevel) {
+			
+			$.ajax({
+				
+				url 	: "insertCmd.do",
+				data	: {deviceCode : deviceCode, comandLevel : comandLevel},
+				async	: false,
+				success : function () {
+				}, error: function () {
+				}
+			})
+		}
+  
 		//회원가입 관리
 		var signUp = {
 			
@@ -286,13 +300,10 @@
 			})
 		}		
 		
-		
-		
   </script>
-  
-<form id="pSubmit" method="post">
 
-</form>
+	<form id="pSubmit">
+	</form>
 
 			<div id="Login_Modal2" style="margin-top:100px;"  class="login-modal modal fade" role="dialog" aria-hidden="true">
                <div class="modal-dialog">
@@ -446,6 +457,7 @@
                 </div>
             </div>        
             
+            <!-- 모달3 -->
 			<div id="dDetailModel" style="margin-top:100px;" name="aa" class="join-modal modal fade" role="dialog" aria-hidden="true" >
 				<div class="modal-dialog">
 		            <!-- Modal content-->
@@ -454,8 +466,8 @@
                        <div class="modal-header">
                        		<h4 class="modal-title" id="myModalLabel">Modal title</h4>
                        </div>
-                       <div class="modal-body">
-							<form id="matchFrm" action="matchSpeack_Music.do" method="post">
+                       <form id="matchFrm" action="matchSpeack_Music.do" method="post">
+		                      <div class="modal-body">
 								<input type="hidden" name="speakerCode" value="${matchInfo.deviceCode}"/>
 								<div title="deviceName">장치명 : ${matchInfo.deviceName}</div>	
 								<div title="musicList">		
@@ -474,16 +486,15 @@
 									</select>
 								</div>
 								<input type="submit" value="저장">
-						</div>
-						<div class="modal-footer">
-							<input type="button" value="소리 테스트하기">
-							</form>
-						</div>
+							</div>
+							<div class="modal-footer">
+								<input type="button" value="소리 테스트하기"/>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
 <script>
-
 	function pageSubmit (pageName) {
 		
 		$("#pSubmit").attr("action",pageName);
@@ -500,5 +511,4 @@
 		
 		console.log("head");
 	});
-
 </script>            

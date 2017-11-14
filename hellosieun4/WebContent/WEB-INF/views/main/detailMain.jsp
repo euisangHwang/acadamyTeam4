@@ -17,7 +17,7 @@
 </script>
 
 <div>
-	<img src="http://210.94.241.121:8080/?action=stream">
+	<img src="http://210.94.232.55:8080/?action=stream">
 </div>
 
 <form id="toShowPictursFrm" action="toShowPicture.do">
@@ -29,6 +29,6 @@
 <!-- 중앙 왼쪽 네모칸 끝 -->
 
 <!-- 중앙 오른쪽 네모칸 -->
-<div style="float: right; border: 1px solid; width: 49%; height: 200px">스피커 테스트하기</div>
+<div style="float: right; border: 1px solid; width: 49%; height: 200px" onClick="insertCmd('${matchInfo.deviceCode}',2)">스피커 테스트하기</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->
 

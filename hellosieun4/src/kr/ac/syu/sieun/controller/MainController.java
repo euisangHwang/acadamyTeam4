@@ -75,17 +75,6 @@ public class MainController {
 			Map<String,Object> cctvInfo =  deviceService.selectAllDevice(param);
 			model.addAttribute("cctvInfo", cctvInfo);
 			
-			//필요할 것 (cctv에서 화면) ppt10페이지
-			//장치번호(어떤장치)
-			//cmd(어떤 명령)
-			
-			//commandLevle 1 : cctvOn
-			HashMap<String,Object> cmdparam = new HashMap<String,Object>();
-			param.put("deviceCode", deviceCode);
-			param.put("comandLevel", 1);
-			
-			deviceService.insertCmd(param);
-			
 			System.out.println(cctvInfo.toString());
 			
 			page = "main/detailMain.tiles";

@@ -84,13 +84,26 @@ WHERE MUSICCODE = #{_parameter}
 </delete>
 
 <select id="selectCmd" parameterType="integer" resultType="map">
-SELECT * FROM COMMAND WHERE deviceCode = #{_parameter}
+SELECT c.comCode, c.date, c.workYN, c.comandLevel, c.deviceCode,
+m.musicCode, m.mFullName
+FROM COMMAND c
+INNER JOIN SPEAKERMUSIC sm
+ON c.deviceCode = sm.deviceCode 
+INNER JOIN MUSIC m
+ON sm.musicCode = m.musicCode
+WHERE c.deviceCode = #{_parameter}
 </select>
 
 <insert id="insertCmd" parameterType="map">
 INSERT INTO COMMAND (DATE, DEVICECODE, COMANDLEVEL) 
 VALUES (NOW(), #{deviceCode}, #{comandLevel})
 </insert>
+
+<update id="updateCmdWork" parameterType="integer">
+UPDATE COMMAND 
+SET WORKYN = "Y"
+WHERE COMCODE = #{_parameter}	
+</update>
 
 <insert id="insertImg" parameterType="map">
 INSERT INTO PICTURE 

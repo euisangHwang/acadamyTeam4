@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,7 +67,14 @@ public class DeviceServiceImpl implements DeviceService{
 		String port = ftpProperties.getProperty("availableServerPort");
 		String userid = ftpProperties.getProperty("userid");
 		String password = ftpProperties.getProperty("password");
-		String remoteFilePath = "";
+		String remoteFilePath = "/home/ftpuser/ftpuser";
+		
+		System.out.println("host:port = "+host+":"+port);
+		
+		FTPClient ftp = null;
+		boolean login = false;
+		boolean isSuccess = false;
+		FileInputStream iStream = null;
 		
 		try {
 			int numnum = 0;
@@ -78,21 +86,24 @@ public class DeviceServiceImpl implements DeviceService{
 				//파일객체 생성
 				String targetFName = targetFNames.next();
 				System.out.println("targetName ::: "+targetFName);
+				System.out.println("contextPath ::: "+mreq.getServletContext().getRealPath("/"));
 				//FTP객체 생성
-				FTPClient ftp = new FTPClient();
+				ftp = new FTPClient();
 				ftp.setControlEncoding("UTF-8");  // 문자 코드를 UTF-8로 인코딩
 				ftp.connect(host, Integer.parseInt(port));
-				ftp.login(userid, password);
-				ftp.enterLocalPassiveMode(); // Passive Mode 접속일 때
-				ftp.changeWorkingDirectory(remoteFilePath);
-				ftp.setFileType(FTP.BINARY_FILE_TYPE);
+				int reply = ftp.getReplyCode();
+				System.out.println("커넥션 여부 : "+reply);
 				
+				if(FTPReply.isPositiveCompletion(reply)) {
+					
+					login = ftp.login(userid, password);
+					System.out.println("로그인 성공여부 : "+login);
+				}
 				
 			//작업 파트
 				List<MultipartFile> multiFile = mreq.getFiles(targetFName);
 				
 				for(int i=0; i<multiFile.size(); i++) {
-
 				//업로드	
 					MultipartFile mFile = multiFile.get(i);
 					
@@ -105,9 +116,8 @@ public class DeviceServiceImpl implements DeviceService{
 						//서버 경로
 	/*					String nasPath = fileServerProperty.getProperty("nas.path");
 						String fServerPath = fileServerProperty.getProperty("ddns.path");*/
-						
 						//파일 경로 설정(파일생성용)
-						String orgNasfilePath = properties.getProperty("nas.path")+fullFileName;
+						String orgNasfilePath = mreq.getServletContext().getRealPath("/")+fullFileName;
 						String filePath = properties.getProperty("ddns.path")+fullFileName;
 					
 					//파일 생성 절차
@@ -130,22 +140,41 @@ public class DeviceServiceImpl implements DeviceService{
 					params.put("uid", uid);
 					
 					deviceDao.insertSound(params);
+				
+					System.out.println("파일 업로드 지났다");	
 					
 				//FTP업로드
-					FileInputStream iStream = new FileInputStream(file);
-					boolean isSuccess = ftp.storeFile(orgFileName, iStream);
+					if(login) {
+						
+						System.out.println("파일업로드 진입");
+						
+						ftp.setFileType(FTP.BINARY_FILE_TYPE);
+						ftp.enterLocalPassiveMode(); // Passive Mode 접속일 때
+						ftp.changeWorkingDirectory(remoteFilePath);
+						System.out.println("워킹디렉토리 : "+ftp.printWorkingDirectory());
+						iStream = new FileInputStream(file);
+						isSuccess = ftp.storeFile(orgFileName, iStream);
+						System.out.println("업로드 성공여부 : "+isSuccess);
+					}
 					
-					if(!isSuccess)
+					if(!isSuccess) 
 						result = "FAIL";
-					
-					iStream.close();
-					ftp.logout();
-					ftp.disconnect();
 				}
 			}
 		} catch (IOException e) {
+		
 			result = "FAIL";
-			System.out.println(e.getMessage());
+			System.out.println("에러떳따 : "+e.getMessage()+"코드 : "+ftp.getReplyCode());
+		} finally {
+			
+			try {
+				if(iStream != null) iStream.close();
+				if(login) ftp.logout();
+				if(ftp != null) ftp.disconnect();
+				
+			} catch (IOException iex) {
+				System.out.println(iex.getMessage());
+			}
 		}
 		return result;
 	}
@@ -181,6 +210,8 @@ public class DeviceServiceImpl implements DeviceService{
 	public void insertCmd(HashMap<String, Object> param) {
 		deviceDao.insertCmd(param);
 	}
+	
+	
 	
 	@Override
 	public List<Map<String, Object>> selectAllDevices(int uMCode) {
@@ -231,4 +262,23 @@ public class DeviceServiceImpl implements DeviceService{
 	public List<Map> selectCmd(int deviceCode) {
 		return deviceDao.selectCmd(deviceCode);
 	}
+
+	@Override
+	public String updateCmdWork(int comCode) {
+		
+		String result = "SUCCESS";
+		try {
+			
+			deviceDao.updateCmdWork(comCode);
+		} catch (Exception e) {
+			result = "FAIL";
+		}
+		
+		return result;
+	}
+	
+	//감지 시 커멘드 등록
+	//커멘드 받고 장치조작  (업데이트 커멘드 만들기)
+	//
+	
 }

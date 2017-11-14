@@ -17,7 +17,7 @@
 	">
 
 <util:properties id="fileServer" location="classpath:/properties/fileServer.properties"/>
-<util:properties id="ftpUser" location="classpath:/properties/fileServer.properties"/>
+<util:properties id="ftpUser" location="classpath:/properties/ftpUser.properties"/>
 
 <bean id="propertyConfigurer"
 		  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

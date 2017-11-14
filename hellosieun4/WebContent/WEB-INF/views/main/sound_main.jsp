@@ -52,21 +52,50 @@
 			frm.submit();
 	}
 	
-	function checkAndDeletet () {
-		
-		var result = true;
-		
-		var frm = $("#delSoundFrm");		
-		var sounds = $("#delSoundFrm input").filter(":checked");
-		
-		if(sounds.length == 0) {
-			alert($("#delSoundFrm").attr("title")+"할 요소가 없습니다.");
-			result = false;
-		}
-		
-		if(result)
-			frm.submit();
+	var soundMange =  {
+			
+			frm : $("#delSoundFrm"),
+			sounds : $("#delSoundFrm input").filter(":checked"),
+			
+			checkSound : function () {
+				
+				var result = true;
+				if(this.sounds.length == 0) {
+					
+					alert(this.attr("title")+"할 요소가 없습니다.");
+					result = false;
+				}
+				
+				return result;
+				
+			},
+			
+			checkAndDeletet	: function () {
+				
+				var result = this.checkSound();
+				
+				if(result)
+					this.frm.submit();
+			},
+			
+			testSound : function () {
+				
+				this.checkSound();
+				var result = true;
+				if(this.sounds.length > 1) {
+					
+					alert("테스트할 음원을 하나만 선택하세요.")
+					result = false;
+				}
+				
+				if(result) {
+					/* insertCmd(deviceCode, comandLevel); */
+				}
+				
+			}
+	
 	}
+	
 </script>
 
 
@@ -97,11 +126,11 @@
 <!-- 중앙 왼쪽 네모칸 끝 -->
 
 <!-- 중앙 아래 가운데 네모칸-->
-<div style="float: left; border: 1px solid; width: 32%; height: 200px" onClick="checkAndDeletet($('#delSoundFrm'))">소리
+<div style="float: left; border: 1px solid; width: 32%; height: 200px" onClick="soundMange.checkAndDeletet()">소리
 	삭제하기</div>
 <!-- 중앙 아래 가운데 네모칸 끝 -->
 
 <!-- 중앙 오른쪽 네모칸 -->
-<div style="float: right; border: 1px solid; width: 32%; height: 200px">소리
-	테스트하기/${uploadMsg}</div>
+<div style="float: right; border: 1px solid; width: 32%; height: 200px" onClick="soundMangetestSound()">소리
+	테스트하기</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->
