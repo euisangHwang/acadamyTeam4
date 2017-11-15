@@ -7,6 +7,8 @@
 
 <h1>sound_main page</h1>
 
+
+
 <script>
 
 	$(document).ready(function () {
@@ -35,7 +37,7 @@
 			var endLeng = sound.value.length;
 			var soundTTC = sound.value.substring(dotLeng+1, endLeng).toLowerCase();
 			
-			if (sound.files.length == 0 || soundTTC != "mp3") {
+			if (sound.files.length == 0 || soundTTC != "wav") {
 				
 				if(frm.children("input[type=file]").length > 1)
 					sound.remove();
@@ -54,15 +56,18 @@
 	
 	var soundMange =  {
 			
-			frm : $("#delSoundFrm"),
-			sounds : $("#delSoundFrm input").filter(":checked"),
+			frm : "",
+			sounds : "",
 			
 			checkSound : function () {
+				
+				this.frm = $("#delSoundFrm");
+				this.sounds = $("#delSoundFrm input").filter(":checked");
 				
 				var result = true;
 				if(this.sounds.length == 0) {
 					
-					alert(this.attr("title")+"할 요소가 없습니다.");
+					alert(this.frm.attr("title")+"할 요소가 없습니다.");
 					result = false;
 				}
 				
@@ -82,6 +87,8 @@
 				
 				this.checkSound();
 				var result = true;
+				var $this = this;
+				
 				if(this.sounds.length > 1) {
 					
 					alert("테스트할 음원을 하나만 선택하세요.")
@@ -89,9 +96,49 @@
 				}
 				
 				if(result) {
+					
+					//selectOnChange 이벤트 핸들러
+					
+					
+					$.ajax({
+						
+						url 	: "selectDeviceByMusic.do",
+						data	: {musicCode : $this.sounds.val()},
+						async	: false,
+						success : function (resultDevices) {
+							
+
+							//디바이스 정보에는, 디바이스코드와 디바이스 네임
+							
+							//팝업소스에 music코드와 musicName을 집어넣고
+							$("#soundTestPop div[title=deviceName]").text($this.sounds.parent().text());
+							
+							//팝업소스에 리스트를 select박스에 집어넣고
+							var options = "";
+							resultDevices.forEach(function(device, index) {
+								
+								options+="<option value="+device.deviceCode+">"+device.deviceName+"</option>"
+							});
+							
+							//이벤트핸들러 장착 및 리스트 출력
+							$("#soundTestPop select").append(options);
+							
+							//팝업소스에 insertCmd(deviceCode, musicCode) 집어넣고
+							$("#soundTestPop select").change(function () {
+								
+								$("#soundTestPop select option[value=x]").attr("disabled",true);
+								$("#soundTestPop input[type=button]").attr("onClick","insertCmd("+this.value+",2)");
+							});
+							
+							//팝업 띄우기
+							$("#soundTestPop").modal();
+						},
+						error	: function () {}
+					})
+					
+					
 					/* insertCmd(deviceCode, comandLevel); */
 				}
-				
 			}
 	
 	}
@@ -131,6 +178,6 @@
 <!-- 중앙 아래 가운데 네모칸 끝 -->
 
 <!-- 중앙 오른쪽 네모칸 -->
-<div style="float: right; border: 1px solid; width: 32%; height: 200px" onClick="soundMangetestSound()">소리
+<div style="float: right; border: 1px solid; width: 32%; height: 200px" onClick="soundMange.testSound()">소리
 	테스트하기</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->

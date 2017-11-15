@@ -27,7 +27,6 @@ public class SignUpController {
 	@RequestMapping(value="signUp.do")
 	public String signUp () throws Exception {
 		
-		
 		return "login/signUp.tiles";
 	}
 	

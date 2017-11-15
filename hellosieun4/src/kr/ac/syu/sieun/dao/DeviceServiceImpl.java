@@ -276,6 +276,11 @@ public class DeviceServiceImpl implements DeviceService{
 		
 		return result;
 	}
+
+	@Override
+	public List<Map<String, Object>> selectDeviceByMusic(int musicCode) {
+		return deviceDao.selectDeviceByMusic(musicCode);
+	}
 	
 	//감지 시 커멘드 등록
 	//커멘드 받고 장치조작  (업데이트 커멘드 만들기)

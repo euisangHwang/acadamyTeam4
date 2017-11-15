@@ -48,6 +48,14 @@ public class DeviceController {
 		out.write(JsonUtil.ListToJson(cmdInfo));
 	}
 	
+	@RequestMapping(value="selectDeviceByMusic.do", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String selectDeviceByMusic (@RequestParam int musicCode) throws Exception {
+		
+		List<Map<String,Object>> devices = deiviceService.selectDeviceByMusic(musicCode);
+		return JsonUtil.ListToJson(devices);
+	}
+	
 	@RequestMapping(value="updateCmdWork.do", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String updateCmdWork (@RequestParam int comCode) throws Exception {

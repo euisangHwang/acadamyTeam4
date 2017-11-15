@@ -158,6 +158,7 @@
 </div>
    <!-- 전체 화면 끝 -->
 
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f1633045c166248833b28b13610fc07&libraries=services"></script>
 <script>
 // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
 var infowindow = new daum.maps.InfoWindow({zIndex:1});
@@ -170,23 +171,13 @@ var mapContainer = document.getElementById('enrollMap'), // 지도를 표시할 
 
 // 지도를 생성합니다    
 var map = new daum.maps.Map(mapContainer, mapOption); 
-var markers = [];
-
-//주소-좌표 변환 객체를 생성합니다
-var geocoder = new daum.maps.services.Geocoder();
 
 // 장소 검색 객체를 생성합니다
 var ps = new daum.maps.services.Places(); 
 
-// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-// LatLngBounds 객체에 좌표를 추가합니다
-var bounds = new daum.maps.LatLngBounds();
-var markerObject ="";
-var keyword =""
-
 // 키워드로 장소를 검색합니다
 function searchA () {
-	keyword = $(".inner-btn-input").val();
+	var	keyword = $(".inner-btn-input").val();
 	
 	if (keyword != "") {
 		
@@ -199,164 +190,85 @@ function searchA () {
 	}	
 }
 
-
-// 키워드 검색 완료 시 호출되는 콜백함수 입니다
-
-function placesSearchCB (status, data, pagination) {
+function placesSearchCB (data, status, pagination) {
     if (status === daum.maps.services.Status.OK) {
-
-        for (var i=0; i<data.places.length; i++) {
+    	
+        var li = "";
+        for (var i=0; i<data.length; i++) {
         	
-        	markerObject = data.places[i];
-            var which = new daum.maps.LatLng(markerObject.latitude, markerObject.longitude);
-            
-            searchDetailAddrFromCoords(which, function(status, result) {
-            	if (status === daum.maps.services.Status.OK) {
-            		var index = 0;
-	            	var juso = markerObject.title; 
-	            	juso += !!result[0].roadAddress.name ? ": "+result[0].roadAddress.name : '';
-	            	juso += ": "+result[0].jibunAddress.name;
-	            	
-	            	var li = '<li data-latitude="'+which.getLat()+'" data-longitude="'+which.getLng()+'" onClick="javascript:setBounds(\''+which.getLat()+'\', \''+which.getLng()+'\', \''+juso+'\')">'+juso+'</li>';
-	            	index++;
-	                $("#location-auto-complete").attr("style", "display: block;");
-	                $("#location-auto-complete").append(li); 
-             	}
-            });
-
-        }       
+        	var road_address_name = ((data[i].road_address_name != "") ? data[i].road_address_name : data[i].address_name);
+        	var place_name = data[i].place_name;
+        	li += "<li onClick='manageMarker.setBounds("+data[i].y+","+data[i].x+",\""+road_address_name+"\")'>"+place_name+":"+road_address_name+"</li>";	
+        }
+        
+        $("#location-auto-complete").attr("style", "display: block");
+        $("#location-auto-complete").append(li); 
     } 
 }
 
-function setBounds (Lat, Lng, juso) {
-	
-    bounds.extend(new daum.maps.LatLng(Lat, Lng));
-    map.setBounds(bounds);
-    $("#location-auto-complete li").remove();
-    $("#location-auto-complete").attr("style", "display: none"); 
-    
-    var li = "";
-    if($(".location-list").length < 1) {
-	    
-    		alert("0개째");
-	    	li +=   "<li class='location-list'>"
-	    	   + 		"<div class='input-radio-wrap left'>"
-	    	   +			"<input type='radio' name='main_location' value='"+juso+"' checked='checked'" 
-	    	   +			"onClick='javascript:mainLocationChange(this)'/>"
-	    	   +		"</div>"
-	    	   +		"<span class='main_location'>(대표위치)</span>"
-	    	   +		"<span class='location-item'" 
-	    	   +		"data-lat='"+Lat+"' data-lng='"+Lng+"'>"
-	    	   +		juso+"</span>"
-	    	   +		"<button type='button' style='background-color: rgba(0,0,0,0);' class='btn btn-large removeSchedule' onClick='javascript:removeLocation(this)'><em class='fa fa-close'></em></button>"
-	    	   +		"<input type='hidden' name='address' value='"+juso+"'/>"
-	    	   +		"<input type='hidden' name='lat' 	  value='"+Lat+"'/>"
-	    	   +		"<input type='hidden' name='lng'	  value='"+Lng+"'/>"
-	    	   +	"</li>";
-    } else {
-    	
-    		alert("1개이상째");
-	    	li +=   "<li>"
-	    	   + 		"<div class='input-radio-wrap left'>"
-	    	   +			"<input type='radio' name='main_location' value='"+juso+"'"
-	    	   +			"onClick='javascript:mainLocationChange(this)'/>"
-	    	   +		"</div>"
-	    	   +		"<span class='main_location'></span>"
-	    	   +		"<span class='location-item'" 
-	    	   +		"data-lat='"+Lat+"' data-lng='"+Lng+"'>"
-	    	   +		juso+"</span>"
-	    	   +		"<button type='button' style='background-color: rgba(0,0,0,0);' class='btn btn-large removeSchedule' onClick='javascript:removeLocation(this)'><em class='fa fa-close'></em></button>"
-	    	   +		"<input type='hidden' name='address' value='"+juso+"'/>"
-	    	   +		"<input type='hidden' name='lat' 	  value='"+Lat+"'/>"
-	    	   +		"<input type='hidden' name='lng'	  value='"+Lng+"'/>"
-	    	   +	"</li>";
-    	
-    }
-    alert("li는 재대로인가?"+li);
-    $("#selected-location-container").append(li);
-    alert("추가는 됬니?" + $("#selected-location-container").children("li").length);
-    
-	displayMarker(Lat, Lng, juso);
-    		
-};
-
-// 지도에 마커를 표시하는 함수입니다
-function displayMarker(Lat, Lng, juso) {
-    
-    // 마커를 생성하고 지도에 표시합니다
-    var marker = new daum.maps.Marker({
-        map: map,
-        position: new daum.maps.LatLng(Lat, Lng) 
-    });
-    
-    markers.push(marker);
-
-    var title = juso.substring(0,juso.indexOf(':'));
-    
-    // 마커에 클릭이벤트를 등록합니다
-    daum.maps.event.addListener(marker, 'click', function() {
-    	var which = marker.getPosition();
-        searchDetailAddrFromCoords(which, function(status, result) {
-            if (status === daum.maps.services.Status.OK) {
-                var detailAddr = '<div>'+title+'</div>';
-                detailAddr 	   += !!result[0].roadAddress.name ? '<div>도로명주소 : ' + result[0].roadAddress.name + '</div>' : '';
-                detailAddr += '<div>지번 주소 : ' + result[0].jibunAddress.name + '</div>';
-                
-                var content = '<div class="bAddr">' +
-                                detailAddr + 
-                              '</div>';
-
-                // 마커를 클릭한 위치에 표시합니다 
-                marker.setPosition(which);
-                marker.setMap(map);
-
-                // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-                infowindow.setContent(content);
-                infowindow.open(map, marker);
-            }   
-        });
-    });
-}
-
-function searchDetailAddrFromCoords(coords, callback) {
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
-    geocoder.coord2detailaddr(coords, callback);
-}   
-
-function mainLocationChange (HTMLLIElement) {
+var manageMarker = {
 		
-		$this = $(HTMLLIElement);
-		if ($this.prop("checked")) {
+		Marker : "",
+		Bounds : "",
+		
+		setBounds : function (Lat, Lng, juso) {
 			
-			$(".location-list .main_location").text("");
-			$(".location-list").removeClass("location-list");
+			// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+			// LatLngBounds 객체에 좌표를 추가합니다
+			var bounds = new daum.maps.LatLngBounds();
+			bounds.extend(new daum.maps.LatLng(Lat, Lng));
+		    map.setBounds(bounds);
+		    this.Bounds = bounds;
+		    $("#location-auto-complete li").remove();
+		    $("#location-auto-complete").attr("style", "display: none"); 
+		    
+		    var li = "";
+			    	li +=   "<li class='location-list'>"
+			    	   +		"<span class='main_location'>(대표위치)</span>"
+			    	   +		juso+"</span>"
+			    	   +		"<button type='button' style='background-color: rgba(0,0,0,0);' class='btn btn-large removeSchedule' onClick='javascript:manageMarker.removeLocation(this)'><em class='fa fa-close'></em></button>"
+			    	   +		"<input type='hidden' name='address' value='"+juso+"'/>"
+			    	   +	"</li>";
+			    	   
+		    $("#selected-location-container").text("");
+		    $("#selected-location-container").append(li);
+		    
+		    manageMarker.displayMarker(Lat, Lng, juso);
+		},
+		
+		displayMarker : function (Lat, Lng, juso) {
+		
+			// 마커를 생성하고 지도에 표시합니다
+		    var marker = new daum.maps.Marker({
+		        map: map,
+		        position: new daum.maps.LatLng(Lat, Lng) 
+		    });
 			
-			$this.parent().parent("li").addClass("location-list");
-			$this.attr("checked", "checked");
-			$this.parent().parent("li").children(".main_location").text("(대표장소)");
+			this.Marker = marker;
+		    
+		    var title = juso.substring(0,juso.indexOf(':'));
+		    
+		    // 마커에 클릭이벤트를 등록합니다
+		    daum.maps.event.addListener(marker, 'click', function() {
+		    	
+		    	var which = marker.getPosition();
+		        var detailAddr = '<div>'+title+'</div>';
+		            detailAddr += '<div>지번 주소 : ' + juso + '</div>';
+				var content = '<div class="bAddr">' + detailAddr + '</div>';
+		        infowindow.setContent(content);
+		        infowindow.open(map, marker);
+		    });
+		},
+		
+		removeLocation : function (HTMLBTNElement) {
+			
+			$this = $(HTMLBTNElement);
+			$this.parent().remove();
+			$("#selected-location-container li").remove();
+			this.Marker.setMap(null);
+			
+			this.Bounds.extend(new daum.maps.LatLng(37.566826, 126.9786567));
+			map.setBounds(this.Bounds);
 		}
-};    
-
-function removeLocation (HTMLBTNElement) {
-		
-		$this = $(HTMLBTNElement);
-		$this.parent().remove();
-		
-		var lis = $("#selected-location-container li");
-		$("#selected-location-container li").remove();
-		
-		markers.forEach(function(value, index) {
-			
-			value.setMap(null);
-		});
-		
-		lis.each(function (index, value) {
-			
-			var lat = $(value).children(".location-item").attr("data-lat");
-			var lng = $(value).children(".location-item").attr("data-lng");
-			var juso = $(value).children(".location-item").text();
-			
-			setBounds(lat, lng, juso);
-		});
-};    
+}  
 </script>   

@@ -17,7 +17,7 @@
 </script>
 
 <div>
-	<img src="http://210.94.232.55:8080/?action=stream">
+	<img src="http://210.94.241.82:8080/?action=stream">
 </div>
 
 <form id="toShowPictursFrm" action="toShowPicture.do">

@@ -98,6 +98,11 @@ public class DeivceDao {
 		String ns = "sieun.Devices.";
 		sqlSession.update(ns+"updateCmdWork", comCode);
 	}
+
+	public List<Map<String, Object>> selectDeviceByMusic(int musicCode) {
+		String ns = "sieun.Devices.";
+		return sqlSession.selectList(ns+"selectDeviceByMusic", musicCode);
+	}
 	
 	
 }

@@ -25,7 +25,6 @@
     <link href="https://fonts.googleapis.com/css?family=Capriola|Roboto" rel="stylesheet">
 
  	<!-- Daum map -->
-    <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=10d44bdc22885a555686cd67fdb5b69b&libraries=services,clusterer"></script>
     <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
     <!-- Bootstrap-->
     <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -468,21 +467,10 @@
                        </div>
                        <form id="matchFrm" action="matchSpeack_Music.do" method="post">
 		                      <div class="modal-body">
-								<input type="hidden" name="speakerCode" value="${matchInfo.deviceCode}"/>
-								<div title="deviceName">장치명 : ${matchInfo.deviceName}</div>	
+								<input type="hidden" name="speakerCode"/>
+								<div title="deviceName"></div>	
 								<div title="musicList">		
-									<c:if test="${fn:length(musics)} == 0">
-											<div>음원이 없습니다.</div>
-									</c:if> 
 									<select name="musicCode">
-										<c:forEach items="${musics}" var="musics">
-											<c:if test="${matchInfo.musicCode eq musics.musicCode}">
-												<option value="${musics.musicCode}" selected>${musics.mOriName}</option>
-											</c:if>
-											<c:if test="${matchInfo.musicCode ne musics.musicCode}">
-												<option value="${musics.musicCode}">${musics.mOriName}</option>
-											</c:if>
-										</c:forEach>
 									</select>
 								</div>
 								<input type="submit" value="저장">
@@ -494,6 +482,32 @@
 					</div>
 				</div>
 			</div>
+
+            <!-- 모달4 -->
+			<div id="soundTestPop" style="margin-top:100px;" name="aa" class="join-modal modal fade" role="dialog" aria-hidden="true" >
+				<div class="modal-dialog">
+		            <!-- Modal content-->
+		  	        <div class="modal-content">
+                       <!-- 로그인 버튼 눌렀을때 모달창 가려지는 마스크 -->
+                       <div class="modal-header">
+                       		<h4 class="modal-title" id="myModalLabel2">Modal title</h4>
+                       </div>
+	                      <div class="modal-body">
+							<div title="deviceName"></div>	
+							<div title="deviceList">		
+								<select>
+									<option value="x" selected>==장치를 선택하세요==</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<input type="button" value="소리 테스트하기" onClick="alert('장치를 선택하세요')"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
 <script>
 	function pageSubmit (pageName) {
 		

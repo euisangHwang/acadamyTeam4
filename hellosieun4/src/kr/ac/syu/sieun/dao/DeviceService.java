@@ -36,5 +36,7 @@ public interface DeviceService {
 	List<Map> selectCmd(int deviceCode);
 
 	String updateCmdWork(int comCode);
+
+	List<Map<String, Object>> selectDeviceByMusic(int musicCode);
 	
 }

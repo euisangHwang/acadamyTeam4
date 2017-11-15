@@ -37,8 +37,20 @@ SELECT deviceCode, deviceName,
 	(SELECT MUSICCODE FROM SPEAKERMUSIC WHERE DEVICECODE = #{_parameter}) musicCode
 FROM DEVICE
 WHERE DEVICECODE = #{_parameter}
-
 </select>
+
+<select id="selectDeviceByMusic" 
+parameterType = "integer" 
+resultType="map">
+SELECT d.deviceCode, d.deviceName 
+FROM DEVICE d 
+INNER JOIN SPEAKERMUSIC sm
+ON d.deviceCode = sm.deviceCode
+INNER JOIN MUSIC m
+ON sm.musicCode = m.musicCode
+WHERE m.musicCode = #{_parameter}
+</select>
+
 
 <select id="selectAllMusic"
 parameterType = "integer"
@@ -85,13 +97,15 @@ WHERE MUSICCODE = #{_parameter}
 
 <select id="selectCmd" parameterType="integer" resultType="map">
 SELECT c.comCode, c.date, c.workYN, c.comandLevel, c.deviceCode,
-m.musicCode, m.mFullName
+m.musicCode, m.mOriName
 FROM COMMAND c
 INNER JOIN SPEAKERMUSIC sm
 ON c.deviceCode = sm.deviceCode 
 INNER JOIN MUSIC m
 ON sm.musicCode = m.musicCode
-WHERE c.deviceCode = #{_parameter}
+WHERE c.deviceCode = #{_parameter} 
+AND c.workYN="N"
+AND c.date >= date_add(now(), interval -1 minute) 
 </select>
 
 <insert id="insertCmd" parameterType="map">

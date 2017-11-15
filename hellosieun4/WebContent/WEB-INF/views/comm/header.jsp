@@ -34,13 +34,22 @@
 		<div class="container">
 			<div id="slidemenu">
 				<ul class="nav navbar-nav navbar-right" id="targetMenu">
-					<li class="beforeLogin"><a href="#" data-toggle="modal" data-target="#Login_Modal2">Login</a></li>
-					<li class="beforeLogin"><a href="#" data-toggle="modal" data-target="#Join_Modal">SignUp</a></li>
+					<!-- <li class="beforeLogin"><a href="#" data-toggle="modal" data-target="#Login_Modal2">Login</a></li>
+					<li class="beforeLogin"><a href="#" data-toggle="modal" data-target="#Join_Modal">SignUp</a></li> -->
+					<li class="dropdown afterLogin">
+						<a href="#" class="dropdown-toggle"
+						data-toggle="dropdown">Service</a>
+						<ul class="dropdown-menu">
+							<li><a href="main.do">메인</a></li>
+							<li><a href="toSound_main.do">음원관리</a></li>
+							<li><a href="deviceSet.do">장치설정</a></li>
+						</ul>
+					</li>
 					<li class="dropdown afterLogin">
 						<a href="#" style="top:-17px;" class="dropdown-toggle user-login"
 						data-toggle="dropdown"></a>
 						<ul class="dropdown-menu">
-							<li><a href="toSetting.do">MyInfo</a></li>
+							<li><a href="toMypage.do">MyInfo</a></li>
 							<li><a href="logout.do">LogOut</a></li>
 						</ul>
 					</li>
