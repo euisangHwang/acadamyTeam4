@@ -25,10 +25,10 @@
 </form>
 
 <!-- 중앙 아래 왼쪽 네모칸 -->
-<div style="float: left; border: 1px solid; width: 49%; height: 200px" onClick="toShowPicturs('${cctvInfo.deviceCode}')">상세사진보기</div>
+<div style="float: left; border: 1px solid; width: 49%; height: 200px" onClick="toShowPicturs(${cctvInfo.deviceCode})">상세사진보기</div>
 <!-- 중앙 왼쪽 네모칸 끝 -->
 
 <!-- 중앙 오른쪽 네모칸 -->
-<div style="float: right; border: 1px solid; width: 49%; height: 200px" onClick="insertCmd('${matchInfo.deviceCode}',2)">스피커 테스트하기</div>
+<div style="float: right; border: 1px solid; width: 49%; height: 200px" onClick="insertCmd(${cctvInfo.sensorCode},2)">스피커 테스트하기</div>
 <!-- 중앙 오른쪽 네모칸 끝 -->
 

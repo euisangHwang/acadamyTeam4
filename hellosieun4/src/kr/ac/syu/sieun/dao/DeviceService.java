@@ -38,5 +38,9 @@ public interface DeviceService {
 	String updateCmdWork(int comCode);
 
 	List<Map<String, Object>> selectDeviceByMusic(int musicCode);
+
+	String insertImg(String pFullName, int deviceCode, HttpServletRequest req);
+
+	void insertDevice(HashMap<String, Object> param);
 	
 }

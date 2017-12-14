@@ -85,7 +85,7 @@ public class MainController {
 	@RequestMapping(value="toShowPicture.do")
 	public String toShowPicture (HttpServletRequest req, Model model) {
 		
-		int deviceCode = Integer.parseInt(req.getParameter("deviceCode"));
+		int deviceCode = Integer.parseInt((String)req.getParameter("deviceCode"));
 		
 		String page = "redirect:login.do";
 		int memberCode = (int)req.getSession().getAttribute("sessMCode");
@@ -95,9 +95,9 @@ public class MainController {
 			List<Map<String,Object>> pictures =  deviceService.selectAllPicture(deviceCode);
 			model.addAttribute("pictures", pictures);
 			
-			System.out.println(pictures.toString());
+			System.out.println("picture°ª : "+pictures.toString());
 			
-			page = "main/detailMain.tiles";
+			page = "main/showPictures.tiles";
 		}
 		return page;
 	}

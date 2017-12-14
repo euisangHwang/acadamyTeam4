@@ -73,14 +73,14 @@ SELECT * FROM PICTURE WHERE DEVICECODE = #{_parameter}
 <select id="selectHomeImg"
 parameterType = "integer"
 resultType="map">
-SELECT P.pictureCode, P.pPath
+SELECT P.pictureCode, P.pPath, p.pFullName
 FROM MEMBER M INNER JOIN PICTURE P
 ON M.HOMEIMG = P.PICTURECODE
 WHERE M.MEMBERCODE = #{_parameter}
 </select>
 
 <select id="selectOnePicture"
-parameterType = "integer"
+parameterType = "String"
 resultType="integer">
 SELECT PICTURECODE FROM PICTURE WHERE PFULLNAME = #{_parameter}
 </select>
@@ -97,7 +97,7 @@ WHERE MUSICCODE = #{_parameter}
 
 <select id="selectCmd" parameterType="integer" resultType="map">
 SELECT c.comCode, c.date, c.workYN, c.comandLevel, c.deviceCode,
-m.musicCode, m.mOriName
+m.musicCode, m.mOriName, (select a.tel from member a where a.memberCode = m.memberCode) userPhone
 FROM COMMAND c
 INNER JOIN SPEAKERMUSIC sm
 ON c.deviceCode = sm.deviceCode 
@@ -111,6 +111,13 @@ AND c.date >= date_add(now(), interval -1 minute)
 <insert id="insertCmd" parameterType="map">
 INSERT INTO COMMAND (DATE, DEVICECODE, COMANDLEVEL) 
 VALUES (NOW(), #{deviceCode}, #{comandLevel})
+</insert>
+
+<insert id="insertDevice" parameterType="map">
+INSERT INTO DEVICE
+(deviceIP, deviceName, deviceSort, memberCode, sensorCode)
+VALUES
+(#{deviceIP},#{deviceName},#{deviceSort},#{memberCode},0)
 </insert>
 
 <update id="updateCmdWork" parameterType="integer">

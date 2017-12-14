@@ -59,7 +59,4 @@ public class SingUpDao {
 	public int checkPhone(HashMap<String, Object> param) {
 		return sqlSession.selectOne(ns+"checkPhone", param);
 	}
-
-	
-	
 }

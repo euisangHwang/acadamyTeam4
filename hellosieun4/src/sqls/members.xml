@@ -7,7 +7,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <select id="selectOneMember"
 parameterType="integer"
 resultType="map">
-SELECT M.memberCode, M.id, M.pw, M.tel, M.name, M.address, M.homeimg, (SELECT pPath FROM picture WHERE pictureCode = M.homeimg) pPath
+SELECT M.memberCode, M.id, M.pw, M.tel, M.name, M.address, M.homeimg, 
+(SELECT pPath FROM picture WHERE pictureCode = M.homeimg) pPath,
+(SELECT pFullName FROM picture WHERE pictureCode = M.homeimg) pFullName
 FROM member M
 WHERE M.memberCode= #{_parameter}
 </select>
@@ -47,8 +49,10 @@ SET ID 		= #{id},
 	PW	    = #{pw}, 
 	TEL 	= #{tel}, 
 	NAME	= #{name}, 
-	ADDRESS = #{address},
-	HOMEIMG = #{homeimg}
+	ADDRESS = #{address}
+	<if test="homeimg != 0">
+	,HOMEIMG = #{homeimg}
+	</if>
 WHERE MEMBERCODE   = #{memberCode}
 </update>
 

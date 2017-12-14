@@ -103,6 +103,11 @@ public class DeivceDao {
 		String ns = "sieun.Devices.";
 		return sqlSession.selectList(ns+"selectDeviceByMusic", musicCode);
 	}
+
+	public void insertDevice(HashMap<String, Object> param) {
+		String ns = "sieun.Devices.";
+		sqlSession.insert(ns+"insertDevice", param);
+	}
 	
 	
 }

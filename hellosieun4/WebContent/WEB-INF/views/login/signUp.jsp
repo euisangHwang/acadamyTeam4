@@ -123,8 +123,9 @@
 			<div class="question-answer">
 				<div class="inner-btn-wrap">
 					<div class="row" style="margin:0;padding:0;">
+						<input type='hidden' name='address' value='${member.address}'/>
 						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12" style="padding: 0 1px;">
-							<input type="text" class="form-control inner-btn-input" placeholder="장소를 검색하세요." 
+							<input type="text" class="form-control inner-btn-input" placeholder="장소를 검색하세요." value="${member.address}"
 							id="search-location-input" autocomplete="off"/>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" style="padding: 0 1px;">
@@ -142,7 +143,7 @@
 		</div> 	  
          <div>
          	<c:if test="${member.homeimg != null}">
-         		<img class="imgMirror" src="${member.pPath}" width="400px" height="400px"/>
+         		<img class="imgMirror" src="${member.pFullName}" width="400px" height="400px"/>
          	</c:if>
          	<c:if test="${member.homeimg == null}">
          		<div class="imgMirror" style="display:inline-block; width:400px; height:400px; background-color: gray; line-height: 400px; text-align: center;">도면사진 없음</div>
@@ -172,6 +173,9 @@ var mapContainer = document.getElementById('enrollMap'), // 지도를 표시할 
 // 지도를 생성합니다    
 var map = new daum.maps.Map(mapContainer, mapOption); 
 
+//좌표 값에 해당하는 행정동, 법정동 정보를 얻는다.
+var geocoder = new daum.maps.services.Geocoder();
+
 // 장소 검색 객체를 생성합니다
 var ps = new daum.maps.services.Places(); 
 
@@ -193,8 +197,30 @@ function searchA () {
 function placesSearchCB (data, status, pagination) {
     if (status === daum.maps.services.Status.OK) {
     	
+    	console.log("data[i].road_address_name : "+data[0].address_name);
+    	
         var li = "";
         for (var i=0; i<data.length; i++) {
+
+   	    	//장소그룹명 출력
+   	    	console.log("category_group_code : "+data[i].category_group_code);
+   	    	console.log("category_group_name : "+data[i].category_group_name);
+        	
+        	geocoder.coord2RegionCode((data[i].x*1).toFixed(7)*1, (data[i].y*1).toFixed(7)*1, 
+       			function(result, status) {
+        	   		if (status === daum.maps.services.Status.OK) {
+
+        	   	   		//행정구역 단위 출력
+        	   	   		console.log(i+"번째시작********************************************************");
+    	    	        console.log('지역 명칭 11: ' + result[0].address_name);
+    	    	       	console.log("region_1depth_name (시,도 단위) : "+result[0].region_1depth_name);
+    	    	    	console.log("region_2depth_name (구 단위) : "+result[0].region_2depth_name);
+    	    	    	console.log("region_3depth_name (동 단위) : "+result[0].region_3depth_name);
+    	    	    	console.log('행정구역 코드 : ' + result[0].code);
+        	   	   		console.log(i+"번째끝********************************************************");
+        	    	};
+        		}
+            );
         	
         	var road_address_name = ((data[i].road_address_name != "") ? data[i].road_address_name : data[i].address_name);
         	var place_name = data[i].place_name;
@@ -220,14 +246,14 @@ var manageMarker = {
 		    map.setBounds(bounds);
 		    this.Bounds = bounds;
 		    $("#location-auto-complete li").remove();
-		    $("#location-auto-complete").attr("style", "display: none"); 
+		    $("#location-auto-complete").attr("style", "display: none");
+		    $("input[name=address]").val(juso);
 		    
 		    var li = "";
 			    	li +=   "<li class='location-list'>"
 			    	   +		"<span class='main_location'>(대표위치)</span>"
 			    	   +		juso+"</span>"
 			    	   +		"<button type='button' style='background-color: rgba(0,0,0,0);' class='btn btn-large removeSchedule' onClick='javascript:manageMarker.removeLocation(this)'><em class='fa fa-close'></em></button>"
-			    	   +		"<input type='hidden' name='address' value='"+juso+"'/>"
 			    	   +	"</li>";
 			    	   
 		    $("#selected-location-container").text("");

@@ -107,7 +107,7 @@
 						if(sendResult == "success") {
 							//번호입력칸 출력 -> 기존 버튼 삭제
 							var inputForNum = "<input type='text' placeholder='인증번호를 입력하세요'/>"
-											  +"<button type='button' onClick='signUp.checkSMSMsg(this, "+callback+")'>인증하기</button>";
+											  +"<button type='button'class='"+BtnEle.className+"' onClick='signUp.checkSMSMsg(this, "+callback+")'>인증하기</button>";
 							$target.after(inputForNum);
 							$target.remove();
 						}
@@ -125,35 +125,39 @@
 				
 				if($num.val().trim() == this.ranNum) {
 					
-					//휴대폰 번호 중복검사
-					$.ajax({
+					var result = true;
+					if(inputEle.className != "findIdPw") {
+
+						//휴대폰 번호 중복검사
+						$.ajax({
+							
+							url		: "findIdByPhone.do",
+							data	: {phone : $this.phoneNumber},
+							async	: false,
+							success : function (findResult) {
+								
+								//중복x면
+								if (findResult != "FAIL") {
+									
+									result = false;
+									alert("해당 휴대폰은 이미 다른 사용자에게 인증되었습니다.");
+								} 
+									
+							},error	: function () {}
+						})
+					}
+					
+					if(result) {
 						
-						url		: "findIdByPhone.do",
-						data	: {phone : $this.phoneNumber},
-						async	: false,
-						success : function (findResult) {
-							
-							//중복x면
-							if (findResult == "FAIL") {
-								
-								alert("인증되었습니다.");
-								$this.certify["phoneCertify"] = true;
-								
-								if($this.certify["duplicateCertify"] == true)
-									$this.allCertify = true;
-								
-								if(callback != undefined)
-									callback();
-								
-							} else {
-								
-								alert("해당 휴대폰은 이미 다른 사용자에게 인증되었습니다.");
-							}
-						},error	: function () {
-							
-							
-						}
-					})
+						alert("인증되었습니다.");
+						$this.certify["phoneCertify"] = true;
+						
+						if($this.certify["duplicateCertify"] == true)
+							$this.allCertify = true;
+						
+						if(callback != undefined)
+							callback();
+					}
 				} else {
 					
 					alert("인증번호가 알맞지 않습니다. 다시입력하세요.");

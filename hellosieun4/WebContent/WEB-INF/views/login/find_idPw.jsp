@@ -5,7 +5,7 @@
 		<div>아이디 찾기 (휴대폰 인증)</div>
 		<div class="findGroup">
 			<input class="phone" title="휴대폰" type="text" placeholder="휴대폰" name="tel"/>
-	   		<button type="button" onClick="signUp.sendSMSMsg(this, 'findIdByPhone')">인증</button>
+	   		<button type="button" class="findIdPw" onClick="signUp.sendSMSMsg(this, 'findIdByPhone')">인증</button>
 		</div>
 	</div>
 	<br>
@@ -16,7 +16,7 @@
 		</div>
 		<div class="findGroup">
 			<input class="phone" title="휴대폰" type="text" placeholder="휴대폰번호"/>
-			<button type="button" onClick="signUp.sendSMSMsg(this, 'findPwByPhone') ">인증</button>
+			<button type="button" class="findIdPw" onClick="signUp.sendSMSMsg(this, 'findPwByPhone') ">인증</button>
 		</div>
 	</div>
 	

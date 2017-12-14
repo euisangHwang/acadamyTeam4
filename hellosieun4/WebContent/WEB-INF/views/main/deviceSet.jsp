@@ -78,7 +78,7 @@
 
 <!-- 중앙  위 가운데 네모칸 -->
 <div id="dHomeimg" style="border: 1px solid; width: 400px; height:400px; text-align: center; 
-		line-height: 400px; background-image: url(${homeimg.pPath}); background-size:cover;">
+		line-height: 400px; background-image: url(${homeimg.pFullName}); background-size:cover;">
 </div>
 <!-- 중앙 위 가운데 네모칸 -->
 
@@ -92,12 +92,27 @@
 			<div>장치가 없습니다.</div>
 		</c:if>
 		<c:forEach items="${devices}" var="devices">
-			<c:if test="${devices.deviceSort =='speaker'}">
-				<button type="button" name="devCode" title="${devices.deviceCode}">${devices.deviceSort}${devices.deviceCode}</button>
-			</c:if>
-			<c:if test="${devices.deviceSort =='sensor'}">
-				<button type="button" name="devCode2" title="${devices.deviceSort}" disabled>${devices.deviceSort}${devices.deviceCode}</button>
-			</c:if>
+			<c:choose>
+				<c:when test="${devices.deviceSort == 'speaker'}">
+					<button type="button" name="devCode" title="${devices.deviceCode}">(${devices.deviceSort})${devices.deviceName}</button>
+				</c:when>
+				<c:otherwise>
+					<button type="button" name="devCode2" title="${devices.deviceSort}" disabled>(${devices.deviceSort})${devices.deviceName}</button>
+				</c:otherwise>
+			</c:choose>
 		</c:forEach>
+</div>
+
+<div>
+	<form id="insertDevice" action="insertDevice.do" method="post">
+		<input type="text" name="deviceIP" placeholder="Input_deviceIP">
+		<input type="text" name="deviceName" placeholder="Input_deviceName">
+		<select name="deviceSort">
+			<option value="speaker">speaker</option>
+			<option value="speaker">cctv</option>
+		</select>
+		<input type="hidden" name="sensorCode"/>
+		<button>addDevice</button>
+	</form>
 </div>
 <!-- 중앙 아래 가운데 네모칸 끝 -->

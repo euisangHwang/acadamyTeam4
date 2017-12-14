@@ -123,12 +123,15 @@ public class SingUpServiceImpl implements SignUpService{
 				
 				//경로 설정
 					//서버 경로
-					String nasPath = properties.getProperty("nas.path");
-					String fServerPath = properties.getProperty("ddns.path");
+					String nasPath = mreq.getServletContext().getRealPath("/");
+					String fServerPath = mreq.getServletContext().getRealPath("/");
+					
+					System.out.println("nasPath : "+nasPath);
+					System.out.println("fServerPath : "+fServerPath);
 					
 					//파일 경로 설정(파일생성용)
 					String orgNasfilePath = nasPath+fullFileName;
-					String filePath = fServerPath+fullFileName;
+					String filePath = 11+fullFileName;
 					
 					String orgThumbFilePath = nasPath+tfullFileName;
 					String tFilePath = fServerPath+tfullFileName;
@@ -257,9 +260,13 @@ public class SingUpServiceImpl implements SignUpService{
 				
 				//경로 설정
 					//서버 경로
-					String nasPath = properties.getProperty("nas.path");
-					String fServerPath = properties.getProperty("ddns.path");
-					
+					System.out.println("여기온다****************************************************");
+					String nasPath = mreq.getServletContext().getRealPath("/");
+					String fServerPath = mreq.getServletContext().getRealPath("/");
+				
+					System.out.println("nasPath : "+nasPath);
+					System.out.println("fServerPath : "+fServerPath);
+				
 					//파일 경로 설정(파일생성용)
 					String orgNasfilePath = nasPath+fullFileName;
 					String filePath = fServerPath+fullFileName;
@@ -305,29 +312,35 @@ public class SingUpServiceImpl implements SignUpService{
 				signUpDao.insertImg(params);
 				
 				pictureCode = signUpDao.selectOnePicture(fullFileName);
+				System.out.println("*************************************************pictureCode : "+pictureCode+"*******************");
 			}
 			
 			Enumeration<String> names = mreq.getParameterNames();
 			int memberCode = (int)mreq.getSession().getAttribute("sessMCode");
 			params = new HashMap<String,Object>();
 			params.put("memberCode", memberCode);
+			System.out.println("pictureCode : "+pictureCode);
+			
+			if(pictureCode != 0) {
+				System.out.println("0아니다");
+				params.put("homeimg", pictureCode);
+			}
+			else {
+				System.out.println("0이다");
+				params.put("homeimg", 0);
+			}
 			
 			//회원정보 저장 시작
 			while (names.hasMoreElements()) {
 				
 				String key = names.nextElement();
-				if(key == "homeimg") {
+				String value = mreq.getParameter(key);
+				System.out.println("key : "+key+" / value값 : "+value+"*****************************************************");
 					
-					if(pictureCode != 0)
-						params.put("homeimg", pictureCode);
-					else 
-						params.put("homeimg", 0);
-				} else {
-					
-					String value = mreq.getParameter(key);
-					params.put(key, value);
-				}
+				params.put(key, value);
 			}
+			
+			System.out.println("homeimg : "+params.get("homeimg"));
 			signUpDao.updateMember(params);
 				
 				

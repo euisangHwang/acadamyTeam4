@@ -22,7 +22,7 @@
 </form> 
 
 <c:forEach items="${devices}" var="devices">
-	<div style="width: 30%;" onClick="toDetailMain('${devices.deviceCode}')">
+	<div style="width: 30%;" onClick="toDetailMain(${devices.deviceCode})">
 		${devices.deviceName}
 	</div>
 </c:forEach>

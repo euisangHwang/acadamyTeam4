@@ -37,6 +37,21 @@ public class DeviceController {
 		 deiviceService.insertCmd(param);
 	}
 	
+	@RequestMapping(value="insertDevice.do", method = {RequestMethod.GET, RequestMethod.POST })
+	public String insertDevice (HttpServletRequest req) throws Exception {
+		
+		HashMap<String,Object> param = new HashMap<String, Object>();
+		param.put("deviceIP", req.getParameter("deviceIP"));
+		param.put("deviceName", req.getParameter("deviceName"));
+		param.put("deviceSort", req.getParameter("deviceSort"));
+		int memberCode = (int)req.getSession().getAttribute("sessMCode");
+		param.put("memberCode", memberCode);
+		
+		deiviceService.insertDevice(param);
+		
+		return "redirect:deviceSet.do";
+	}
+	
 	@RequestMapping(value="selectCmd.do")
 	public void selectCmd (HttpServletRequest req, HttpServletResponse res) throws Exception {
 		
@@ -64,4 +79,12 @@ public class DeviceController {
 		return result;
 	}
 	
+	@RequestMapping(value="insertImg.do", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String insertImg (@RequestParam String pFullName, int deviceCode, HttpServletRequest req) throws Exception {
+		
+		String result = deiviceService.insertImg(pFullName, deviceCode, req);
+		System.out.println("result : "+result);
+		return result;
+	}
 }

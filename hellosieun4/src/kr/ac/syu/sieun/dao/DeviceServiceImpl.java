@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -27,6 +28,9 @@ public class DeviceServiceImpl implements DeviceService{
 
 	@Autowired
 	private DeivceDao deviceDao;
+	
+	@Autowired
+	private SingUpDao signUpDao;
 	
 	@Resource(name="fileServer")
 	private Properties properties;
@@ -118,7 +122,7 @@ public class DeviceServiceImpl implements DeviceService{
 						String fServerPath = fileServerProperty.getProperty("ddns.path");*/
 						//파일 경로 설정(파일생성용)
 						String orgNasfilePath = mreq.getServletContext().getRealPath("/")+fullFileName;
-						String filePath = properties.getProperty("ddns.path")+fullFileName;
+						String filePath = mreq.getServletContext().getRealPath("/")+fullFileName;
 					
 					//파일 생성 절차
 						//원본파일 생성
@@ -280,6 +284,42 @@ public class DeviceServiceImpl implements DeviceService{
 	@Override
 	public List<Map<String, Object>> selectDeviceByMusic(int musicCode) {
 		return deviceDao.selectDeviceByMusic(musicCode);
+	}
+
+	@Override
+	public String insertImg(String pFullName, int deviceCode,HttpServletRequest req) {
+		
+		String result = "IMG_INSERT_SUCCESS";
+		try {
+			HashMap<String,Object> params = new HashMap<String,Object>();
+			
+			String orgFileName = pFullName;
+			String fullFileName = pFullName;
+			String filePath = "/opt/tomcat/instance1/webapps/hellosieun4/"+pFullName;
+			
+			//파라미터 정리
+			params.put("orgFileName", orgFileName);
+			params.put("fullFileName", fullFileName);
+			params.put("filePath", filePath);
+			params.put("uid", "hes1");
+			
+			params.put("tFilePath", "tFilePath");
+			params.put("tOrgFileName", "tOrgFileName");
+			params.put("tfullFileName", "tfullFileName");
+			params.put("deviceCode", deviceCode);
+			
+			signUpDao.insertImg(params);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			result = "IMG_INSERT_FAIL";
+		}
+		
+		return result;
+	}
+
+	@Override
+	public void insertDevice(HashMap<String, Object> param) {
+		deviceDao.insertDevice(param);
 	}
 	
 	//감지 시 커멘드 등록
